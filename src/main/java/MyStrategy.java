@@ -16,6 +16,7 @@ public final class MyStrategy implements Strategy {
     Map<Integer, Robot> robots = new HashMap<>();
     private Vec3D defPos = new Vec3D();
     private Vec3D attPos = new Vec3D();
+    Vec3D robotVel = new Vec3D();
     int attId = Integer.MIN_VALUE;
     int defId = Integer.MAX_VALUE;
     boolean attacking = true;
@@ -102,8 +103,9 @@ public final class MyStrategy implements Strategy {
         Vec3D pos = new Vec3D(robot.x, robot.y, robot.z);
         Vec3D move = target.copy();
         move.sub(pos);
+        move.y =0;
         if (id == attId) {
-//            System.out.println("moveTo() attck target: " + target + " move: " + move);
+            System.out.println("moveTo() attck target: " + target + " move: " + move.length(rules.MAX_ENTITY_SPEED));
         } else {
 //            System.out.println("moveTo() defend target: " + target + " move: " + move);
         }
@@ -112,7 +114,7 @@ public final class MyStrategy implements Strategy {
     }
 
     private void init(Game game, Rules rules) {
-
+        this.rules = rules;
         ball.set(game.ball.x, game.ball.y, game.ball.z);
         ballSpeed.set(game.ball.velocity_x, game.ball.velocity_y, game.ball.velocity_z);
 //        System.out.println("ball: " + ball);
@@ -129,8 +131,8 @@ public final class MyStrategy implements Strategy {
                 }
             }
 
-            enemyGates.set(0, 1, 40);
-            this.rules = rules;
+            enemyGates.set(0, 1, rules.arena.depth / 2 + rules.arena.goal_depth);
+
 //            System.out.println("attId: " + attId + " defId: " + defId);
         }
 
@@ -140,6 +142,7 @@ public final class MyStrategy implements Strategy {
             robots.put(r.id, r);
             if (r.id == attId) {
                 attPos.set(r.x, r.y, r.z);
+                System.out.println("att speed:" + (new Vec3D(r.velocity_x, r.velocity_y, r.velocity_z)).length());
             } else {
                 defPos.set(r.x, r.y, r.z);
             }
