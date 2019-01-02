@@ -1,7 +1,3 @@
-package geometry;
-
-import static java.lang.Math.*;
-
 public class Vec3D {
     public double x;
     public double y;

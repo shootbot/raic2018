@@ -1,4 +1,3 @@
-import geometry.Vec3D;
 import model.*;
 
 import java.util.HashMap;

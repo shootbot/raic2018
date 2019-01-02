@@ -1,5 +1,3 @@
-package geometry;
-
 import org.apache.commons.math3.util.FastMath;
 
 import static java.lang.Math.*;
