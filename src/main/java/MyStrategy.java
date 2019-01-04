@@ -33,7 +33,7 @@ public final class MyStrategy implements Strategy {
             move = moveDefender(rules);
         }
 
-        move = move.length(30);
+        move = move.setLength(30);
 
         action.target_velocity_x = move.x;
         action.target_velocity_y = move.y;
@@ -77,7 +77,7 @@ public final class MyStrategy implements Strategy {
     private Vec3D getCrashPoint() {
         Vec3D crashPoint = ball.copy();
         crashPoint.sub(enemyGates);
-        crashPoint.length(crashPoint.length() + rules.BALL_RADIUS + rules.ROBOT_RADIUS);
+        crashPoint.setLength(crashPoint.length() + rules.BALL_RADIUS + rules.ROBOT_RADIUS);
         crashPoint.add(enemyGates);
         return crashPoint;
     }
@@ -104,12 +104,12 @@ public final class MyStrategy implements Strategy {
         move.sub(pos);
         move.y =0;
         if (id == attId) {
-            System.out.println("moveTo() attck target: " + target + " move: " + move.length(rules.MAX_ENTITY_SPEED));
+            System.out.println("moveTo() attck target: " + target + " move: " + move.setLength(rules.MAX_ENTITY_SPEED));
         } else {
 //            System.out.println("moveTo() defend target: " + target + " move: " + move);
         }
 
-        return move.length(rules.MAX_ENTITY_SPEED);
+        return move.setLength(rules.MAX_ENTITY_SPEED);
     }
 
     private void init(Game game, Rules rules) {

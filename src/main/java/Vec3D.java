@@ -21,10 +21,18 @@ public class Vec3D {
         this.z = v.z;
     }
 
-    public void set(double x, double y, double z) {
+    public Vec3D set(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
+        return this;
+    }
+    
+    public Vec3D set(Vec3D position) {
+        this.x = position.x;
+        this.y = position.y;
+        this.z = position.z;
+        return this;
     }
 
 //    public Vec3D(double angle) {
@@ -68,6 +76,13 @@ public class Vec3D {
         x *= f;
         y *= f;
         z *= f;
+        return this;
+    }
+    
+    public Vec3D div(double f) {
+        x /= f;
+        y /= f;
+        z /= f;
         return this;
     }
 
@@ -122,8 +137,8 @@ public class Vec3D {
         }
     }
 
-    public Vec3D length(double length) {
-        double currentLength = this.length();
+    public Vec3D setLength(double length) {
+        double currentLength = length();
         if (currentLength == 0.0D) {
             throw new IllegalStateException("Can\'t resize zero-width vector.");
         } else {
@@ -171,17 +186,7 @@ public class Vec3D {
         return String.format("(%.2f %.2f %.2f)", x, y, z);
     }
 
-    public Vec3D div(double f) {
-        x /= f;
-        y /= f;
-        z /= f;
-        return this;
-    }
+    
 
-    public Vec3D copyFrom(Vec3D position) {
-        this.x = position.x;
-        this.y = position.y;
-        this.z = position.z;
-        return this;
-    }
+    
 }
