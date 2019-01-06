@@ -1,4 +1,4 @@
-import org.apache.commons.math3.util.FastMath;
+
 
 import static java.lang.Math.*;
 
@@ -61,14 +61,13 @@ public class Vec2D {
     }
 
     public double length() {
-//        return hypot(x, y);
-        return FastMath.hypot(x, y);
+        return hypot(x, y);
+//        return FastMath.hypot(x, y);
     }
 
     public double distance(Vec2D v) {
-
-//        return hypot(x - v.x, y - v.y);
-        return FastMath.hypot(x - v.x, y - v.y);
+        return hypot(x - v.x, y - v.y);
+//        return FastMath.hypot(x - v.x, y - v.y);
     }
 
     public double squareDistance(Vec2D v) {

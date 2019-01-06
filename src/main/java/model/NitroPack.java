@@ -8,4 +8,6 @@ public final class NitroPack {
     public double radius;
     public double nitro_amount;
     public Integer respawn_ticks;
+
+    public boolean alive;
 }
