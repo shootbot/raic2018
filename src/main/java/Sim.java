@@ -1,6 +1,7 @@
-import model.Arena;
+import model.*;
 
 import java.util.*;
+
 
 public class Sim {
     private Random rng = new Random();
@@ -59,7 +60,7 @@ public class Sim {
     }
 
     void collide_entities(Entity a, Entity b) {
-        double distance = dist(a, b);
+        double distance = Ut.dist(a, b);
         double penetration = a.radius + b.radius - distance;
         if (penetration > 0) {
             double k_a = (1 / a.mass) / ((1 / a.mass) + (1 / b.mass)); // change del to mul?
@@ -83,10 +84,10 @@ public class Sim {
                     - b.radius_change_speed - a.radius_change_speed;
 
             if (delta_velocity < 0) {
-                // bug! use only single getUniformRandom
-                double impulse_x = (1 + getUniformRandom(MIN_HIT_E, MAX_HIT_E)) * delta_velocity * dir_x;
-                double impulse_y = (1 + getUniformRandom(MIN_HIT_E, MAX_HIT_E)) * delta_velocity * dir_y;
-                double impulse_z = (1 + getUniformRandom(MIN_HIT_E, MAX_HIT_E)) * delta_velocity * dir_z;
+                double coef = (1 + getUniformRandom(MIN_HIT_E, MAX_HIT_E)) * delta_velocity;
+                double impulse_x = coef * dir_x;
+                double impulse_y = coef * dir_y;
+                double impulse_z = coef * dir_z;
 
                 a.velocity_x += impulse_x * k_a;
                 a.velocity_y += impulse_y * k_a;
@@ -114,9 +115,9 @@ public class Sim {
                             + e.velocity_z * collision_normal_z
                             - e.radius_change_speed;
             if (velocity < 0) {
-                e.velocity_x -= (1 + e.ARENA_E) * velocity * collision_normal_x;
-                e.velocity_y -= (1 + e.ARENA_E) * velocity * collision_normal_y;
-                e.velocity_z -= (1 + e.ARENA_E) * velocity * collision_normal_z;
+                e.velocity_x -= (1 + e.arena_e) * velocity * collision_normal_x;
+                e.velocity_y -= (1 + e.arena_e) * velocity * collision_normal_y;
+                e.velocity_z -= (1 + e.arena_e) * velocity * collision_normal_z;
               no_collision = false;
             }
         }
@@ -251,7 +252,7 @@ public class Sim {
             if (robot.nitro_amount == MAX_NITRO_AMOUNT) continue;
             for (MyNitroPack pack : nitro_packs) {
                 if (!pack.alive) continue;
-                if (dist(robot, pack) <= robot.radius + pack.radius) {
+                if (Ut.dist(robot, pack) <= robot.radius + pack.radius) {
                     robot.nitro_amount = MAX_NITRO_AMOUNT;
                     pack.alive = false;
                     pack.respawn_ticks = NITRO_PACK_RESPAWN_TICKS;
@@ -272,24 +273,19 @@ public class Sim {
     private double clampSpeed(Entity e) {
         double vel = len(e.velocity_x, e.velocity_y, e.velocity_z);
 
-        if (vel < e.MAX_SPEED) return vel;
+        if (vel < e.max_speed) return vel;
 
-        e.velocity_x *= e.MAX_SPEED / vel;
-        e.velocity_y *= e.MAX_SPEED / vel;
-        e.velocity_z *= e.MAX_SPEED / vel;
-        return e.MAX_SPEED;
+        e.velocity_x *= e.max_speed / vel;
+        e.velocity_y *= e.max_speed / vel;
+        e.velocity_z *= e.max_speed / vel;
+        return e.max_speed;
     }
 
     double len(double x, double y, double z) {
         return Math.sqrt(x * x + y * y + z * z);
     }
 
-    double dist(Entity a, Entity b) {
-        double dx = a.x - b.x;
-        double dy = a.y - b.y;
-        double dz = a.z - b.z;
-        return Math.sqrt(dx * dx + dy * dy + dz * dz); // replace with fast sqrt?
-    }
+    
 
     double getUniformRandom(double min, double max) {
         return rng.nextDouble() * (max - min) + min;

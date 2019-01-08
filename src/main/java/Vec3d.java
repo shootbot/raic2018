@@ -1,85 +1,85 @@
-public class Vec3D {
+public class Vec3d {
     public double x;
     public double y;
     public double z;
 
-    public Vec3D() {
+    public Vec3d() {
         x = 0;
         y = 0;
         z = 0;
     }
 
-    public Vec3D(double x, double y, double z) {
+    public Vec3d(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public Vec3D(Vec3D v) {
+    public Vec3d(Vec3d v) {
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
     }
 
-    public Vec3D set(double x, double y, double z) {
+    public Vec3d set(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
         return this;
     }
     
-    public Vec3D set(Vec3D position) {
+    public Vec3d set(Vec3d position) {
         this.x = position.x;
         this.y = position.y;
         this.z = position.z;
         return this;
     }
 
-//    public Vec3D(double angle) {
+//    public Vec3d(double angle) {
 //        this.x = cos(angle);
 //        this.y = sin(angle);
 //    }
 
-    public Vec3D copy() {
-        return new Vec3D(this);
+    public Vec3d copy() {
+        return new Vec3d(this);
     }
 
-    public Vec3D add(Vec3D v) {
+    public Vec3d add(Vec3d v) {
         x += v.x;
         y += v.y;
         z += v.z;
         return this;
     }
 
-    public Vec3D sub(Vec3D v) {
+    public Vec3d sub(Vec3d v) {
         x -= v.x;
         y -= v.y;
         z -= v.z;
         return this;
     }
 
-    public Vec3D add(double dx, double dy, double dz) {
+    public Vec3d add(double dx, double dy, double dz) {
         x += dx;
         y += dy;
         z += dz;
         return this;
     }
 
-    public Vec3D sub(double dx, double dy, double dz) {
+    public Vec3d sub(double dx, double dy, double dz) {
         x -= dx;
         y -= dy;
         z -= dz;
         return this;
     }
 
-    public Vec3D mul(double f) {
+    public Vec3d mul(double f) {
         x *= f;
         y *= f;
         z *= f;
         return this;
     }
     
-    public Vec3D div(double f) {
+    public Vec3d div(double f) {
         x /= f;
         y /= f;
         z /= f;
@@ -95,12 +95,12 @@ public class Vec3D {
 //        return FastMath.hypot(x, y);
     }
 
-    public double distance(Vec3D v) {
+    public double distance(Vec3d v) {
         return hypot(x - v.x, y - v.y, z - v.z);
 //        return FastMath.hypot(x - v.x, y - v.y);
     }
 
-    public double squareDistance(Vec3D v) {
+    public double squareDistance(Vec3d v) {
         double tx = x - v.x;
         double ty = y - v.y;
         double tz = z - v.z;
@@ -118,14 +118,14 @@ public class Vec3D {
         return x * x + y * y + z * z;
     }
 
-    public Vec3D reverse() {
+    public Vec3d reverse() {
         x = -x;
         y = -y;
         z = -z;
         return this;
     }
 
-    public Vec3D normalize() {
+    public Vec3d normalize() {
         double length = length();
         if (length == 0.0D) {
             throw new IllegalStateException("Can\'t set angle of zero-width vector.");
@@ -137,7 +137,7 @@ public class Vec3D {
         }
     }
 
-    public Vec3D setLength(double length) {
+    public Vec3d setLength(double length) {
         double currentLength = length();
         if (currentLength == 0.0D) {
             throw new IllegalStateException("Can\'t resize zero-width vector.");
@@ -146,14 +146,14 @@ public class Vec3D {
         }
     }
 
-//    public Vec3D perpendicular() {
+//    public Vec3d perpendicular() {
 //        double a = y;
 //        y = -x;
 //        x = a;
 //        return this;
 //    }
 
-    public double dotProduct(Vec3D v) {
+    public double dotProduct(Vec3d v) {
         return x * v.x + y * v.y + z * v.z;
     }
 
@@ -161,11 +161,11 @@ public class Vec3D {
 //        return atan2(y, x);
 //    }
 
-//    public boolean nearlyEqual(Vec3D potentialIntersectionPoint, double epsilon) {
+//    public boolean nearlyEqual(Vec3d potentialIntersectionPoint, double epsilon) {
 //        return abs(x - potentialIntersectionPoint.x) < epsilon && abs(y - potentialIntersectionPoint.y) < epsilon;
 //    }
 
-//    public Vec3D rotate(Vec3D angle) {
+//    public Vec3d rotate(Vec3d angle) {
 //        double newX = angle.x * x - angle.y * y;
 //        double newY = angle.y * x + angle.x * y;
 //        x = newX;
@@ -173,7 +173,7 @@ public class Vec3D {
 //        return this;
 //    }
 
-//    public Vec3D rotateBack(Vec3D angle) {
+//    public Vec3d rotateBack(Vec3d angle) {
 //        double newX = angle.x * x + angle.y * y;
 //        double newY = angle.x * y - angle.y * x;
 //        x = newX;
