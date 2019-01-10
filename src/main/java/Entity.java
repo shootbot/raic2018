@@ -1,7 +1,6 @@
 
 
 public class Entity {
-    public double max_speed;
     public double arena_e;
 
     public double x;
