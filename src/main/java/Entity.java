@@ -15,4 +15,9 @@ public class Entity {
     public double mass;
     public double radius_change_speed;
 
+    @Override
+    public String toString() {
+        return String.format("{(%.2f %.2f %.2f)->(%.2f %.2f %.2f)}", x, y, z, velocity_x, velocity_y, velocity_z);
+    }
+
 }

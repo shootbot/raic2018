@@ -49,7 +49,7 @@ public final class MyStrategy implements Strategy {
 	}
 	
 	private void moveAttacker() {
-		double dz = ball.z - bot.pos.z - Sim.BALL_RADIUS - Sim.ROBOT_RADIUS;
+		double dz = ball.z - bot.pos.z; // - Sim.BALL_RADIUS - Sim.ROBOT_RADIUS
 		if (attacking) {
 			if (dz > 0) {
 				kickBall();
@@ -67,7 +67,7 @@ public final class MyStrategy implements Strategy {
 				kickBall();
 			} else {
 				Vec3d move = ball.copy();
-				move.z -= 5 * Sim.BALL_RADIUS;
+				move.z -= 8 * Sim.BALL_RADIUS;
 				targetSpeed = getMove30To(move);
 			}
 		}
@@ -101,8 +101,8 @@ public final class MyStrategy implements Strategy {
 	}
 	
 	private void moveDefender() {
-		double x = ball.x + ballSpeed.x / 60;
-		double TOO_NEAR = 4.5;
+		double x = ball.x + ballSpeed.x * 8 * Sim.DELTA_TIME;
+		double TOO_NEAR = 2.25;
 		
 		double leftLimit = -Sim.GOAL_WIDTH / 2 + Sim.ARENA_BOTTOM_RADIUS;
 		double rightLimit = Sim.GOAL_WIDTH / 2 - Sim.ARENA_BOTTOM_RADIUS;
@@ -115,16 +115,17 @@ public final class MyStrategy implements Strategy {
 		}
 		
 		targetSpeed = getMove30To(new Vec3d(x, 0, -Sim.ARENA_DEPTH / 2));
+        targetSpeed.mul(0.5);
+
 		if (targetSpeed.x > 0) {
 			double s = rightLimit - bot.pos.x;
-			
 			if (s < TOO_NEAR) {
-				targetSpeed.x = -100;
+				targetSpeed.x = -Sim.ROBOT_MAX_GROUND_SPEED / 2;
 			}
 		} else {
 			double s = bot.pos.x - leftLimit;
 			if (s < TOO_NEAR) {
-				targetSpeed.x = 100;
+				targetSpeed.x = Sim.ROBOT_MAX_GROUND_SPEED / 2;
 			}
 		}
 		
