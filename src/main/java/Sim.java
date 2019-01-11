@@ -14,37 +14,49 @@ public class Sim {
 	
 	private boolean collision;
 	
-	private final double ROBOT_MIN_RADIUS = 1;
-	private final double ROBOT_MAX_RADIUS = 1.05;
-	private final double ROBOT_MAX_JUMP_SPEED = 15;
-	private final double ROBOT_ACCELERATION = 100;
-	private final double ROBOT_NITRO_ACCELERATION = 30;
-	private final double ROBOT_MAX_GROUND_SPEED = 30;
-	private final double ROBOT_ARENA_E = 0;
-	private final double ROBOT_RADIUS = 1;
-	private final double ROBOT_MASS = 2;
-	private final int TICKS_PER_SECOND = 60;
-	private final int MICROTICKS_PER_TICK = 100;
-	private final int RESET_TICKS = 2 * TICKS_PER_SECOND;
-	private final double BALL_ARENA_E = 0.7;
-	private final double BALL_RADIUS = 2;
-	private final double BALL_MASS = 1;
-	private final double MIN_HIT_E = 0.4;
-	private final double MAX_HIT_E = 0.5;
-	private final double MAX_ENTITY_SPEED = 100;
+	public static final double ROBOT_MIN_RADIUS = 1;
+	public static final double ROBOT_MAX_RADIUS = 1.05;
+	public static final double ROBOT_MAX_JUMP_SPEED = 15;
+	public static final double ROBOT_ACCELERATION = 100;
+	public static final double ROBOT_NITRO_ACCELERATION = 30;
+	public static final double ROBOT_MAX_GROUND_SPEED = 30;
+	public static final double ROBOT_ARENA_E = 0;
+	public static final double ROBOT_RADIUS = 1;
+	public static final double ROBOT_MASS = 2;
+	public static final int TICKS_PER_SECOND = 60;
+	public static final int MICROTICKS_PER_TICK = 100;
+	public static final int RESET_TICKS = 2 * TICKS_PER_SECOND;
+	public static final double BALL_ARENA_E = 0.7;
+	public static final double BALL_RADIUS = 2;
+	public static final double BALL_MASS = 1;
+	public static final double MIN_HIT_E = 0.4;
+	public static final double MAX_HIT_E = 0.5;
+	public static final double MAX_ENTITY_SPEED = 100;
 	
-	private final double MAX_NITRO_AMOUNT = 100;
-	private final double START_NITRO_AMOUNT = 50;
-	private final double NITRO_POINT_VELOCITY_CHANGE = 0.6;
-	private final double NITRO_PACK_X = 20;
-	private final double NITRO_PACK_Y = 1;
-	private final double NITRO_PACK_Z = 30;
-	private final double NITRO_PACK_RADIUS = 0.5;
-	private final double NITRO_PACK_AMOUNT = 100;
-	private final int NITRO_PACK_RESPAWN_TICKS = 10 * TICKS_PER_SECOND;
+	public static final double MAX_NITRO_AMOUNT = 100;
+	public static final double START_NITRO_AMOUNT = 50;
+	public static final double NITRO_POINT_VELOCITY_CHANGE = 0.6;
+	public static final double NITRO_PACK_X = 20;
+	public static final double NITRO_PACK_Y = 1;
+	public static final double NITRO_PACK_Z = 30;
+	public static final double NITRO_PACK_RADIUS = 0.5;
+	public static final double NITRO_PACK_AMOUNT = 100;
+	public static final int NITRO_PACK_RESPAWN_TICKS = 10 * TICKS_PER_SECOND;
 	
-	private final double GRAVITY = 30;
-	private final double DELTA_TIME = 1.0 / TICKS_PER_SECOND;
+	public static final double GRAVITY = 30;
+	public static final double DELTA_TIME = 1.0 / TICKS_PER_SECOND;
+	
+	public static final double ARENA_WIDTH = 60;
+	public static final double ARENA_HEIGHT = 20;
+	public static final double ARENA_DEPTH = 80;
+	public static final double ARENA_BOTTOM_RADIUS = 3;
+	public static final double ARENA_TOP_RADIUS = 7;
+	public static final double ARENA_CORNER_RADIUS = 13;
+	public static final double GOAL_TOP_RADIUS = 3;
+	public static final double GOAL_WIDTH = 30;
+	public static final double GOAL_DEPTH = 10;
+	public static final double GOAL_HEIGHT = 10;
+	public static final double GOAL_SIDE_RADIUS = 1;
 	
 	//////////////////////////////////////////////////////////////////////////////////
 	// output variables
