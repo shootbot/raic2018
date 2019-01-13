@@ -18,9 +18,7 @@ public final class MyStrategy implements Strategy {
     private String msg = "";
     private Rules rules;
 
-    private Map<Integer, Robot> robots = new HashMap<>();
     private Solid bot = new Solid();
-    private int attId, defId;
     private boolean attacking = true;
 
     private Vec3d ENEMY_GATES = new Vec3d(0, 0, Sim.ARENA_DEPTH / 2 + Sim.GOAL_DEPTH);
@@ -28,21 +26,22 @@ public final class MyStrategy implements Strategy {
 
     private Vec3d targetSpeed;
     private double jumpSpeed;
+	private boolean isAttacker;
 
 	@Override
 	public void act(Robot me, Rules rules, Game game, Action action) {
 		init(game, rules, me);
 
-		if (me.id == attId) {
+		if (isAttacker) {
 			moveAttacker();
 		} else {
 			moveDefender();
 		}
 
-		setAction(action);
+		writeAction(action);
 	}
 
-	private void setAction(Action action) {
+	private void writeAction(Action action) {
 		action.target_velocity_x = targetSpeed.x;
 		action.target_velocity_y = targetSpeed.y;
 		action.target_velocity_z = targetSpeed.z;
@@ -253,52 +252,34 @@ public final class MyStrategy implements Strategy {
 		msg = "";
 		targetSpeed = new Vec3d();
 		jumpSpeed = 0;
+		isAttacker = false;
 
 		ball.set(game.ball.x, game.ball.y, game.ball.z);
 		ballSpeed.set(game.ball.velocity_x, game.ball.velocity_y, game.ball.velocity_z);
 
-		double minDist = 500;
-		if (robots.isEmpty()) {
-			for (Robot r : game.robots) {
-				if (!r.is_teammate) continue;
-
-				// biggest id is attacker, lowest is defender
-				if (r.id > attId) {
-					attId = r.id;
-				}
-				if (r.id < defId) {
-					defId = r.id;
-				}
-
-//                if (ball.z >= 0) {
-//                    double dist = Ut.dist(new MyBall(ball), new MyRobot(r));
-//                    if (dist < minDist) {
-//                        minDist = dist;
-//                        attId = r.id;
-//                    }
-//                } else {
-//
-//                }
-			}
-
-
-		}
+		Vec3d ballPos = ball.copy();
+		ballPos.add(ballSpeed.copy().mul(10 * Sim.DELTA_TIME));
 
 		for (Robot r : game.robots) {
 			if (!r.is_teammate) continue;
 
-			robots.put(r.id, r);
-			if (me.id == r.id) {
-				bot.pos = new Vec3d(r.x, r.y, r.z);
-				bot.speed = new Vec3d(r.velocity_x, r.velocity_y, r.velocity_z);
+			if (me.id != r.id) {
+				bot.pos = new Vec3d(me.x, me.y, me.z);
+				bot.speed = new Vec3d(me.velocity_x, me.velocity_y, me.velocity_z);
+//				Vec3d newPos = bot.pos.copy().add(bot.speed.copy().mul(10 * Sim.DELTA_TIME));
+//
+//				Vec3d otherBotPos = new Vec3d(r.x, r.y, r.z);
+//				Vec3d otherBotSpeed = new Vec3d(r.velocity_x, r.velocity_y, r.velocity_z);
+//				otherBotPos.add(otherBotSpeed.mul(10 * Sim.DELTA_TIME));
+//
+//				double myDist = Ut.dist(ballPos, newPos);
+//				double otherDist = Ut.dist(ballPos, otherBotPos);
+
+				if (me.z > r.z) {
+					isAttacker = true;
+				}
 			}
-//            if (r.id == attId) {
-//                System.out.println("att speed:" + (new Vec3d(r.velocity_x, r.velocity_y, r.velocity_z)).length());
-//            }
-//            System.out.println("attPos: " + attPos + " defPos: " + defPos);
 		}
-
-
 	}
 
 	@Override
