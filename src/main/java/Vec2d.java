@@ -1,60 +1,58 @@
-package unused;
-
 import static java.lang.Math.*;
 
-public class Vec2D {
+public class Vec2d {
     public double x;
     public double y;
 
-    public Vec2D() {
+    public Vec2d() {
         x = 0;
         y = 0;
     }
 
-    public Vec2D(double x, double y) {
+    public Vec2d(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public Vec2D(Vec2D v) {
+    public Vec2d(Vec2d v) {
         this.x = v.x;
         this.y = v.y;
     }
 
-    public Vec2D(double angle) {
+    public Vec2d(double angle) {
         this.x = cos(angle);
         this.y = sin(angle);
     }
 
-    public Vec2D copy() {
-        return new Vec2D(this);
+    public Vec2d copy() {
+        return new Vec2d(this);
     }
 
-    public Vec2D add(Vec2D v) {
+    public Vec2d add(Vec2d v) {
         x += v.x;
         y += v.y;
         return this;
     }
 
-    public Vec2D sub(Vec2D v) {
+    public Vec2d sub(Vec2d v) {
         x -= v.x;
         y -= v.y;
         return this;
     }
 
-    public Vec2D add(double dx, double dy) {
+    public Vec2d add(double dx, double dy) {
         x += dx;
         y += dy;
         return this;
     }
 
-    public Vec2D sub(double dx, double dy) {
+    public Vec2d sub(double dx, double dy) {
         x -= dx;
         y -= dy;
         return this;
     }
 
-    public Vec2D mul(double f) {
+    public Vec2d mul(double f) {
         x *= f;
         y *= f;
         return this;
@@ -65,12 +63,12 @@ public class Vec2D {
 //        return FastMath.hypot(x, y);
     }
 
-    public double distance(Vec2D v) {
+    public double distance(Vec2d v) {
         return hypot(x - v.x, y - v.y);
 //        return FastMath.hypot(x - v.x, y - v.y);
     }
 
-    public double squareDistance(Vec2D v) {
+    public double squareDistance(Vec2d v) {
         double tx = x - v.x;
         double ty = y - v.y;
         return tx * tx + ty * ty;
@@ -86,13 +84,13 @@ public class Vec2D {
         return x * x + y * y;
     }
 
-    public Vec2D reverse() {
+    public Vec2d reverse() {
         x = -x;
         y = -y;
         return this;
     }
 
-    public Vec2D normalize() {
+    public Vec2d normalize() {
         double length = this.length();
         if (length == 0.0D) {
             throw new IllegalStateException("Can\'t set angle of zero-width vector.");
@@ -103,7 +101,7 @@ public class Vec2D {
         }
     }
 
-    public Vec2D length(double length) {
+    public Vec2d length(double length) {
         double currentLength = this.length();
         if (currentLength == 0.0D) {
             throw new IllegalStateException("Can\'t resize zero-width vector.");
@@ -112,14 +110,14 @@ public class Vec2D {
         }
     }
 
-    public Vec2D perpendicular() {
+    public Vec2d perpendicular() {
         double a = y;
         y = -x;
         x = a;
         return this;
     }
 
-    public double dotProduct(Vec2D vector) {
+    public double dotProduct(Vec2d vector) {
         return x * vector.x + y * vector.y;
     }
 
@@ -127,11 +125,11 @@ public class Vec2D {
         return atan2(y, x);
     }
 
-    public boolean nearlyEqual(Vec2D potentialIntersectionPoint, double epsilon) {
+    public boolean nearlyEqual(Vec2d potentialIntersectionPoint, double epsilon) {
         return abs(x - potentialIntersectionPoint.x) < epsilon && abs(y - potentialIntersectionPoint.y) < epsilon;
     }
 
-    public Vec2D rotate(Vec2D angle) {
+    public Vec2d rotate(Vec2d angle) {
         double newX = angle.x * x - angle.y * y;
         double newY = angle.y * x + angle.x * y;
         x = newX;
@@ -139,7 +137,7 @@ public class Vec2D {
         return this;
     }
 
-    public Vec2D rotateBack(Vec2D angle) {
+    public Vec2d rotateBack(Vec2d angle) {
         double newX = angle.x * x + angle.y * y;
         double newY = angle.x * y - angle.y * x;
         x = newX;
@@ -149,18 +147,18 @@ public class Vec2D {
 
     @Override
     public String toString() {
-        return "Vec2D ("
+        return "Vec2d ("
                 + String.valueOf(x) + "; "
                 + String.valueOf(y) + ")";
     }
 
-    public Vec2D div(double f) {
+    public Vec2d div(double f) {
         x /= f;
         y /= f;
         return this;
     }
 
-    public Vec2D copyFrom(Vec2D position) {
+    public Vec2d copyFrom(Vec2d position) {
         this.x = position.x;
         this.y = position.y;
         return this;
