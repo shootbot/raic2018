@@ -1,4 +1,7 @@
 import model.*;
+import model.Robot;
+
+import java.awt.*;
 
 public class JsonTest implements Strategy {
 	public void act(Robot me, Rules rules, Game game, Action action) {
@@ -40,4 +43,6 @@ public class JsonTest implements Strategy {
 			"]";
 		return json;
 	}
+	
+	
 }
