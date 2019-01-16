@@ -45,7 +45,7 @@ public final class MyStrategy implements Strategy {
 	@Override
 	public void act(Robot me, Rules rules, Game game, Action action) {
 		init(game, rules, me);
-		sim(game);
+//		sim(game);
 		
 		if (isAttacker) {
 			moveAttacker();
@@ -59,7 +59,7 @@ public final class MyStrategy implements Strategy {
 	private void sim(Game game) {
 		long timeTotal = 0;
 		long TIME_LIMIT = 20L;
-		int SIM_TICKS = 300;
+		int SIM_TICKS = 120;
 		sim.setBall(new MyBall(ball, ballSpeed));
 		sim.setNitro_packs(new MyNitroPack[0]);
 		sim.setRobots(new MyRobot[0]);

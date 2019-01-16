@@ -65,8 +65,7 @@ public class Sim {
 	private double target_velocity_x;
 	private double target_velocity_y;
 	private double target_velocity_z;
-	
-	
+
 	//////////////////////////////////////////////////////////////////////////////////
 	
 	public void setRobots(MyRobot[] robots) {
@@ -112,35 +111,9 @@ public class Sim {
 		collide_with_arena(ball);
 		
 		checkGoalScored();
-		
 		checkRobotsGettingNitro();
 	}
-	
-	private void checkRobotsGettingNitro() {
-		for (MyRobot robot : robots) {
-			if (robot.nitro_amount == MAX_NITRO_AMOUNT) continue;
-			
-			for (MyNitroPack pack : nitro_packs) {
-				if (!pack.alive) continue;
-				
-				if (Ut.dist(robot, pack) <= robot.radius + pack.radius) {
-					robot.nitro_amount = MAX_NITRO_AMOUNT;
-					pack.alive = false;
-					pack.respawn_ticks = NITRO_PACK_RESPAWN_TICKS;
-				}
-			}
-		}
-	}
-	
-	private void checkGoalScored() {
-		if (ball.z > ARENA_DEPTH / 2 + ball.radius) {
-			greenScore++;
-		}
-		if (ball.z < -ARENA_DEPTH / 2 - ball.radius) {
-			redScore++;
-		}
-	}
-	
+
 	private void collideRobotsWithBallAndArena() {
 		for (MyRobot robot : robots) {
 			collide_entities(robot, ball);
@@ -315,6 +288,31 @@ public class Sim {
 	
 	private void shuffle(MyRobot[] robots) {
 		// todo make shuffle
+	}
+
+	private void checkGoalScored() {
+		if (ball.z > ARENA_DEPTH / 2 + ball.radius) {
+			greenScore++;
+		}
+		if (ball.z < -ARENA_DEPTH / 2 - ball.radius) {
+			redScore++;
+		}
+	}
+
+	private void checkRobotsGettingNitro() {
+		for (MyRobot robot : robots) {
+			if (robot.nitro_amount == MAX_NITRO_AMOUNT) continue;
+
+			for (MyNitroPack pack : nitro_packs) {
+				if (!pack.alive) continue;
+
+				if (Ut.dist(robot, pack) <= robot.radius + pack.radius) {
+					robot.nitro_amount = MAX_NITRO_AMOUNT;
+					pack.alive = false;
+					pack.respawn_ticks = NITRO_PACK_RESPAWN_TICKS;
+				}
+			}
+		}
 	}
 	
 	public Dan dan_to_arena(Vec3d point) {
@@ -662,7 +660,6 @@ public class Sim {
 		return x;
 	}
 	
-	////////////////////////////// utility funcs
 	private Dan min(Dan a, Dan b) {
 		return a.distance < b.distance ? a : b;
 	}
@@ -693,6 +690,5 @@ public class Sim {
 		
 		return new Vec3d(target_velocity_x, target_velocity_y, target_velocity_z);
 	}
-	
 	
 }
