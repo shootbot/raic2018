@@ -1,39 +1,7 @@
 
-public class TestCollectedData {
-	public static void main(String[] args) {
-		double EPS = 1e-12;
-		int count = 0;
-		for (TestDanInfo t : collectedData) {
-			Dan resDan = sim.dan_to_arena(t.point);
-			t.validDan.normal.normalize();
-			if (!equalsWithEps(resDan, t.validDan, EPS)) {
-//			if (!resDan.equals(t.validDan)) {
-				System.out.println("data" + t + " res" + resDan);
-				count++;
-			}
-		}
-		System.out.println("total: "  + collectedData.length + " wrong: " + count);
-	}
+public class CollectedData {
 	
-	private static boolean equalsWithEps(Dan dan1, Dan dan2, double eps) {
-		if (!equalsWithEps(dan1.distance, dan2.distance, eps)) return false;
-		
-		if (!equalsWithEps(dan1.normal.x, dan2.normal.x, eps)) return false;
-		if (!equalsWithEps(dan1.normal.y, dan2.normal.y, eps)) return false;
-		if (!equalsWithEps(dan1.normal.z, dan2.normal.z, eps)) return false;
-		
-		return true;
-	}
-	
-	private static boolean equalsWithEps(double d1, double d2, double eps) {
-		if (d1 == d2) return true;
-		if (Math.abs((d1 - d2) / (d1 + d2)) < eps) return true;
-		
-		return false;
-	}
-	
-	static Sim sim = new Sim();
-	static TestDanInfo[] collectedData = new TestDanInfo[]{
+	public TestDanInfo[] data = new TestDanInfo[]{
 		new TestDanInfo(new Vec3d(-28.19000053405760, 7.90000009536743, -15.36999988555910), new Dan(1.80999946594238, new Vec3d(1.00000000000000, 0.00000000000000, 0.00000000000000))),
 		new TestDanInfo(new Vec3d(-28.19000053405760, 7.09999990463257, 12.10000038146970), new Dan(1.80999946594238, new Vec3d(1.00000000000000, 0.00000000000000, 0.00000000000000))),
 		new TestDanInfo(new Vec3d(28.18000030517580, 9.85999965667725, -15.36999988555910), new Dan(1.81999969482422, new Vec3d(-1.00000000000000, 0.00000000000000, 0.00000000000000))),
