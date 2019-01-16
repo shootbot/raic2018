@@ -59,8 +59,10 @@ public final class MyStrategy implements Strategy {
 	private void sim(Game game) {
 		long timeTotal = 0;
 		long TIME_LIMIT = 20L;
-		int SIM_TICKS = 60;
+		int SIM_TICKS = 300;
 		sim.setBall(new MyBall(ball, ballSpeed));
+		sim.setNitro_packs(new MyNitroPack[0]);
+		sim.setRobots(new MyRobot[0]);
 		int currentTick = game.current_tick;
 		Vec3d curBall = ball.copy();
 		boolean isFirstTime = true;
@@ -77,9 +79,11 @@ public final class MyStrategy implements Strategy {
 			
 			if (!isFirstTime) {
 				msg.append(',');
-				isFirstTime = false;
 			}
+			isFirstTime = false;
+			
 			msg.append(line);
+			
 		}
 		
 	}
