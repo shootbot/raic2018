@@ -1,23 +1,25 @@
 import java.awt.*;
+import java.util.*;
 
 public class Ut {
 	private static float[] c = new float[4];
+	private static Random rng = new Random();
 	
-	static double dist(Entity a, Entity b) {
+	public static double dist(Entity a, Entity b) {
 		double dx = a.x - b.x;
 		double dy = a.y - b.y;
 		double dz = a.z - b.z;
 		return Math.sqrt(dx * dx + dy * dy + dz * dz);
 	}
 	
-	static double dist(Vec3d a, Vec3d b) {
+	public static double dist(Vec3d a, Vec3d b) {
 		double dx = a.x - b.x;
 		double dy = a.y - b.y;
 		double dz = a.z - b.z;
 		return Math.sqrt(dx * dx + dy * dy + dz * dz);
 	}
 	
-	static double dist2d(Vec3d a, Vec3d b) {
+	public static double dist2d(Vec3d a, Vec3d b) {
 		double dx = a.x - b.x;
 		double dz = a.z - b.z;
 		return Math.sqrt(dx * dx + dz * dz);
@@ -47,4 +49,15 @@ public class Ut {
 			c[0], c[1], c[2], c[3]);
 	}
 	
+	public static double len(double x, double y, double z) {
+		return Math.sqrt(x * x + y * y + z * z);
+	}
+	
+	public static double getUniformRandom(double min, double max) {
+		return rng.nextDouble() * (max - min) + min;
+	}
+	
+	public static boolean nextBoolean() {
+		return rng.nextBoolean();
+	}
 }

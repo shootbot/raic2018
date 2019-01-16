@@ -156,49 +156,58 @@ public class Vec3d {
 		}
 	}
 
-//    public Vec3d perpendicular() {
-//        double a = y;
-//        y = -x;
-//        x = a;
-//        return this;
-//    }
+    public Vec3d perpendicular2d() {
+        double a = z;
+        z = -x;
+        x = a;
+        return this;
+    }
 
 	public double dotProduct(Vec3d v) {
 		return x * v.x + y * v.y + z * v.z;
 	}
 	
-	
 
-//    public double angle() {
-//        return atan2(y, x);
-//    }
+    public double angle() {
+        return Math.atan2(z, x);
+    }
 
 //    public boolean nearlyEqual(Vec3d potentialIntersectionPoint, double epsilon) {
 //        return abs(x - potentialIntersectionPoint.x) < epsilon && abs(y - potentialIntersectionPoint.y) < epsilon;
 //    }
 
-//    public Vec3d rotate(Vec3d angle) {
-//        double newX = angle.x * x - angle.y * y;
-//        double newY = angle.y * x + angle.x * y;
-//        x = newX;
-//        y = newY;
-//        return this;
-//    }
+    public Vec3d rotate(Vec3d angle) {
+        double newX = angle.x * x - angle.z * z;
+        double newZ = angle.z * x + angle.x * z;
+        x = newX;
+        z = newZ;
+        return this;
+    }
 
-//    public Vec3d rotateBack(Vec3d angle) {
-//        double newX = angle.x * x + angle.y * y;
-//        double newY = angle.x * y - angle.y * x;
-//        x = newX;
-//        y = newY;
-//        return this;
-//    }
+    public Vec3d rotateBack(Vec3d angle) {
+        double newX = angle.x * x + angle.z * z;
+        double newZ = angle.x * z - angle.z * x;
+        x = newX;
+        z = newZ;
+        return this;
+    }
 
 	@Override
 	public String toString() {
 		return String.format("(%.2f %.2f %.2f)", x, y, z);
 	}
-
 	
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof Vec3d)) return false;
+		
+		Vec3d o = (Vec3d) other;
+		if (o.x == this.x && o.y == this.y && o.z == this.z) {
+			return true;
+		}
+		
+		return false;
+	}
 
 	
 }

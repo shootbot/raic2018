@@ -7,9 +7,18 @@ import java.util.*;
 import static java.lang.Math.*;
 
 /**
- * ideas for third robot:
+ * ideas
+ * cut microticks per tick
+ * sim only full speed and 0 15 jumps
+ * pp for bot positioning
+ *
+ *
+ * third robot:
  * keeper-2
  * attacker-2
+ * toughguy
+ *
+ *
  */
 
 public final class MyStrategy implements Strategy {

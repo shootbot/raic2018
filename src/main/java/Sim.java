@@ -4,11 +4,9 @@ import java.util.*;
 
 
 public class Sim {
-    private Random rng = new Random();
     private MyRobot[] robots;
     private MyNitroPack[] nitro_packs;
     private MyBall ball;
-    private Arena arena;
     private int greenScore;
     private int redScore;
 
@@ -92,7 +90,7 @@ public class Sim {
     // todo check all nitro code when nitro is live
     public void tick() {
         for (int i = 0; i < MICROTICKS_PER_TICK; i++) {
-            update((float) (DELTA_TIME / MICROTICKS_PER_TICK));
+            update(DELTA_TIME / MICROTICKS_PER_TICK);
         }
 
         for (MyNitroPack pack : nitro_packs) {
@@ -105,7 +103,7 @@ public class Sim {
         }
     }
 
-    private void update(float delta_time) {
+    private void update(double delta_time) {
         shuffle(robots);
 
         moveRobots(delta_time);
@@ -137,10 +135,10 @@ public class Sim {
     }
 
     private void checkGoalScored() {
-        if (ball.z > arena.depth / 2 + ball.radius) {
+        if (ball.z > ARENA_DEPTH / 2 + ball.radius) {
             greenScore++;
         }
-        if (ball.z < -arena.depth / 2 - ball.radius) {
+        if (ball.z < -ARENA_DEPTH / 2 - ball.radius) {
             redScore++;
         }
     }
@@ -160,7 +158,7 @@ public class Sim {
         }
     }
 
-    private void moveRobots(float delta_time) {
+    private void moveRobots(double delta_time) {
         for (MyRobot robot : robots) {
             if (robot.touch) {
                 clampSpeed(robot.target_velocity_x,
@@ -180,7 +178,7 @@ public class Sim {
                 double target_velocity_change_y = target_velocity_y - robot.velocity_y;
                 double target_velocity_change_z = target_velocity_z - robot.velocity_z;
 
-                double len = len(target_velocity_change_x, target_velocity_change_y, target_velocity_change_z);
+                double len = Ut.len(target_velocity_change_x, target_velocity_change_y, target_velocity_change_z);
                 if (len > 0) {
                     double acceleration = ROBOT_ACCELERATION * Math.max(0, robot.touch_normal_y);
                     Vec3d v = Vec3d.normalize(target_velocity_change_x, target_velocity_change_y, target_velocity_change_z);
@@ -204,7 +202,7 @@ public class Sim {
                 double target_velocity_change_z = Math.min(
                         robot.target_velocity_z - robot.velocity_z,
                         robot.nitro_amount * NITRO_POINT_VELOCITY_CHANGE);
-                double lenChange = len(target_velocity_change_x, target_velocity_change_y, target_velocity_change_z);
+                double lenChange = Ut.len(target_velocity_change_x, target_velocity_change_y, target_velocity_change_z);
                 if (lenChange > 0) {
                     double acceleration_x = target_velocity_change_x / lenChange * ROBOT_NITRO_ACCELERATION;
                     double acceleration_y = target_velocity_change_x / lenChange * ROBOT_NITRO_ACCELERATION;
@@ -215,7 +213,7 @@ public class Sim {
                     robot.velocity_x += velocity_change_x;
                     robot.velocity_y += velocity_change_y;
                     robot.velocity_z += velocity_change_z;
-                    robot.nitro_amount -= len(velocity_change_x, velocity_change_y, velocity_change_z)
+                    robot.nitro_amount -= Ut.len(velocity_change_x, velocity_change_y, velocity_change_z)
                             / NITRO_POINT_VELOCITY_CHANGE;
                 }
             }
@@ -245,7 +243,7 @@ public class Sim {
             double k_a = b.mass / massSum;
             double k_b = a.mass / massSum;
 
-            double len = len(b.x - a.x, b.y - a.y, b.z - a.z);
+            double len = Ut.len(b.x - a.x, b.y - a.y, b.z - a.z);
             double normal_x = (b.x - a.x) / len;
             double normal_y = (b.y - a.y) / len;
             double normal_z = (b.z - a.z) / len;
@@ -266,7 +264,7 @@ public class Sim {
                     - b.radius_change_speed - a.radius_change_speed;
 
             if (delta_velocity < 0) {
-                double k = (1 + getUniformRandom(MIN_HIT_E, MAX_HIT_E)) * delta_velocity;
+                double k = (1 + Ut.getUniformRandom(MIN_HIT_E, MAX_HIT_E)) * delta_velocity;
                 double impulse_x = k * normal_x;
                 double impulse_y = k * normal_y;
                 double impulse_z = k * normal_z;
@@ -283,7 +281,7 @@ public class Sim {
     }
 
     private void collide_with_arena(Entity e) {
-        dan_to_arena(e);
+        dan_to_arena(new Vec3d(e.x, e.y, e.z));
         double penetration = e.radius - dan_ret_distance;
         if (penetration > 0) {
             e.x += penetration * dan_ret_normal_x;
@@ -306,7 +304,7 @@ public class Sim {
         collision = false;
     }
 
-    private void move(Entity e, float delta_time) {
+    private void move(Entity e, double delta_time) {
         clampSpeed(e, MAX_ENTITY_SPEED);
 
         e.x += e.velocity_x * delta_time;
@@ -321,7 +319,7 @@ public class Sim {
         // todo make shuffle
     }
 
-    private Dan dan_to_arena(Entity point) {
+    public Dan dan_to_arena(Vec3d point) {
         boolean negate_x = point.x < 0;
         boolean negate_z = point.z < 0;
         if (negate_x) {
@@ -361,7 +359,7 @@ public class Sim {
         return new Dan(dan_ret_distance, new Vec3d(dan_ret_normal_x, dan_ret_normal_y, dan_ret_normal_z));
     }
 
-    private Dan dan_to_sphere_inner(Vec3d point, Vec3d sphere_center, float sphere_radius) {
+    private Dan dan_to_sphere_inner(Vec3d point, Vec3d sphere_center, double sphere_radius) {
         Vec3d v = point.copy();
         v.sub(sphere_center);
         dan_ret_distance = sphere_radius - v.length();
@@ -375,7 +373,7 @@ public class Sim {
         return new Dan(dan_ret_distance, new Vec3d(dan_ret_normal_x, dan_ret_normal_y, dan_ret_normal_z));
     }
 
-    private Dan dan_to_sphere_outer(Vec3d point, Vec3d sphere_center, float sphere_radius) {
+    private Dan dan_to_sphere_outer(Vec3d point, Vec3d sphere_center, double sphere_radius) {
         Vec3d v = point.copy();
         v.sub(sphere_center);
 
@@ -392,221 +390,221 @@ public class Sim {
         // Ground
         Dan dan = dan_to_plane(point, new Vec3d(0, 0, 0), new Vec3d(0, 1, 0));
         // Ceiling
-        dan = min(dan, dan_to_plane(point, new Vec3d(0, arena.height, 0), new Vec3d(0, -1, 0)));
+        dan = min(dan, dan_to_plane(point, new Vec3d(0, ARENA_HEIGHT, 0), new Vec3d(0, -1, 0)));
         // Side x
-        dan = min(dan, dan_to_plane(point, new Vec3d(arena.width / 2, 0, 0), new Vec3d(-1, 0, 0)));
+        dan = min(dan, dan_to_plane(point, new Vec3d(ARENA_WIDTH / 2, 0, 0), new Vec3d(-1, 0, 0)));
         // Side z (goal)
         dan = min(dan, dan_to_plane(
                 point,
-                new Vec3d(0, 0, (arena.depth / 2) + arena.goal_depth),
+                new Vec3d(0, 0, (ARENA_DEPTH / 2) + GOAL_DEPTH),
                 new Vec3d(0, 0, -1)));
         // Side z
         Vec2d v = new Vec2d(point.x, point.y)
-                .sub(new Vec2d((arena.goal_width / 2) - arena.goal_top_radius, arena.goal_height - arena.goal_top_radius));
-        if (point.x >= (arena.goal_width / 2) + arena.goal_side_radius
-                || point.y >= arena.goal_height + arena.goal_side_radius
+                .sub(new Vec2d((GOAL_WIDTH / 2) - GOAL_TOP_RADIUS, GOAL_HEIGHT - GOAL_TOP_RADIUS));
+        if (point.x >= (GOAL_WIDTH / 2) + GOAL_SIDE_RADIUS
+                || point.y >= GOAL_HEIGHT + GOAL_SIDE_RADIUS
                 || (
                 v.x > 0
                         && v.y > 0
-                        && v.length() >= arena.goal_top_radius + arena.goal_side_radius)) {
+                        && v.length() >= GOAL_TOP_RADIUS + GOAL_SIDE_RADIUS)) {
             dan = min(dan, dan_to_plane(
                     point,
-                    new Vec3d(0, 0, arena.depth / 2),
+                    new Vec3d(0, 0, ARENA_DEPTH / 2),
                     new Vec3d(0, 0, -1)));
         }
 
         // Side x & ceiling (goal)
-        if (point.z >= (arena.depth / 2) + arena.goal_side_radius) {
+        if (point.z >= (ARENA_DEPTH / 2) + GOAL_SIDE_RADIUS) {
             // x
             dan = min(dan, dan_to_plane(
                     point,
-                    new Vec3d(arena.goal_width / 2, 0, 0),
+                    new Vec3d(GOAL_WIDTH / 2, 0, 0),
                     new Vec3d(-1, 0, 0)));
             // y
             dan = min(dan, dan_to_plane(
                     point,
-                    new Vec3d(0, arena.goal_height, 0),
+                    new Vec3d(0, GOAL_HEIGHT, 0),
                     new Vec3d(0, -1, 0)));
         }
 
         // Goal back corners
-        assert arena.bottom_radius == arena.goal_top_radius;
-        if (point.z > (arena.depth / 2) + arena.goal_depth - arena.bottom_radius) {
+        assert ARENA_BOTTOM_RADIUS == GOAL_TOP_RADIUS;
+        if (point.z > (ARENA_DEPTH / 2) + GOAL_DEPTH - ARENA_BOTTOM_RADIUS) {
             dan = min(dan, dan_to_sphere_inner(
                     point,
                     new Vec3d(
                             clamp(
                                     point.x,
-                                    arena.bottom_radius - (arena.goal_width / 2),
-                                    (arena.goal_width / 2) - arena.bottom_radius),
+                                    ARENA_BOTTOM_RADIUS - (GOAL_WIDTH / 2),
+                                    (GOAL_WIDTH / 2) - ARENA_BOTTOM_RADIUS),
                             clamp(
                                     point.y,
-                                    arena.bottom_radius,
-                                    arena.goal_height - arena.goal_top_radius),
-                            (arena.depth / 2) + arena.goal_depth - arena.bottom_radius),
-                    (float) arena.bottom_radius));
+                                    ARENA_BOTTOM_RADIUS,
+                                    GOAL_HEIGHT - GOAL_TOP_RADIUS),
+                            (ARENA_DEPTH / 2) + GOAL_DEPTH - ARENA_BOTTOM_RADIUS),
+                    ARENA_BOTTOM_RADIUS));
         }
 
         // Corner
-        if (point.x > (arena.width / 2) - arena.corner_radius
-                && point.z > (arena.depth / 2) - arena.corner_radius) {
+        if (point.x > (ARENA_WIDTH / 2) - ARENA_CORNER_RADIUS
+                && point.z > (ARENA_DEPTH / 2) - ARENA_CORNER_RADIUS) {
             dan = min(dan, dan_to_sphere_inner(
                     point,
                     new Vec3d(
-                            (arena.width / 2) - arena.corner_radius,
+                            (ARENA_WIDTH / 2) - ARENA_CORNER_RADIUS,
                             point.y,
-                            (arena.depth / 2) - arena.corner_radius),
-                    (float) arena.corner_radius));
+                            (ARENA_DEPTH / 2) - ARENA_CORNER_RADIUS),
+                    ARENA_CORNER_RADIUS));
         }
 
         // Goal outer corner
-        if (point.z < (arena.depth / 2) + arena.goal_side_radius) {
+        if (point.z < (ARENA_DEPTH / 2) + GOAL_SIDE_RADIUS) {
             // Side x
-            if (point.x < (arena.goal_width / 2) + arena.goal_side_radius) {
+            if (point.x < (GOAL_WIDTH / 2) + GOAL_SIDE_RADIUS) {
                 dan = min(dan, dan_to_sphere_outer(
                         point,
                         new Vec3d(
-                                (arena.goal_width / 2) + arena.goal_side_radius,
+                                (GOAL_WIDTH / 2) + GOAL_SIDE_RADIUS,
                                 point.y,
-                                (arena.depth / 2) + arena.goal_side_radius),
-                        (float) arena.goal_side_radius));
+                                (ARENA_DEPTH / 2) + GOAL_SIDE_RADIUS),
+                         GOAL_SIDE_RADIUS));
             }
 
             // Ceiling
-            if (point.y < arena.goal_height + arena.goal_side_radius) {
+            if (point.y < GOAL_HEIGHT + GOAL_SIDE_RADIUS) {
                 dan = min(dan, dan_to_sphere_outer(
                         point,
                         new Vec3d(
                                 point.x,
-                                arena.goal_height + arena.goal_side_radius,
-                                (arena.depth / 2) + arena.goal_side_radius),
-                        (float) arena.goal_side_radius));
+                                GOAL_HEIGHT + GOAL_SIDE_RADIUS,
+                                (ARENA_DEPTH / 2) + GOAL_SIDE_RADIUS),
+                         GOAL_SIDE_RADIUS));
             }
 
             // Top corner
             Vec2d o = new Vec2d(
-                    (arena.goal_width / 2) - arena.goal_top_radius,
-                    arena.goal_height - arena.goal_top_radius);
+                    (GOAL_WIDTH / 2) - GOAL_TOP_RADIUS,
+                    GOAL_HEIGHT - GOAL_TOP_RADIUS);
             Vec2d u = new Vec2d(point.x, point.y).sub(o);
             if (u.x > 0 && u.y > 0) {
-                o.add(u.normalize().mul(arena.goal_top_radius + arena.goal_side_radius));
+                o.add(u.normalize().mul(GOAL_TOP_RADIUS + GOAL_SIDE_RADIUS));
                 dan = min(dan, dan_to_sphere_outer(
                         point,
-                        new Vec3d(o.x, o.y, (arena.depth / 2) + arena.goal_side_radius),
-                        (float) arena.goal_side_radius));
+                        new Vec3d(o.x, o.y, (ARENA_DEPTH / 2) + GOAL_SIDE_RADIUS),
+                         GOAL_SIDE_RADIUS));
             }
         }
 
 
         // Goal inside top corners
-        if (point.z > (arena.depth / 2) + arena.goal_side_radius
-                && point.y > arena.goal_height - arena.goal_top_radius) {
+        if (point.z > (ARENA_DEPTH / 2) + GOAL_SIDE_RADIUS
+                && point.y > GOAL_HEIGHT - GOAL_TOP_RADIUS) {
             // Side x
-            if (point.x > (arena.goal_width / 2) - arena.goal_top_radius) {
+            if (point.x > (GOAL_WIDTH / 2) - GOAL_TOP_RADIUS) {
                 dan = min(dan, dan_to_sphere_inner(
                         point,
                         new Vec3d(
-                                (arena.goal_width / 2) - arena.goal_top_radius,
-                                arena.goal_height - arena.goal_top_radius,
+                                (GOAL_WIDTH / 2) - GOAL_TOP_RADIUS,
+                                GOAL_HEIGHT - GOAL_TOP_RADIUS,
                                 point.z),
-                        (float) arena.goal_top_radius));
+                         GOAL_TOP_RADIUS));
             }
 
             // Side z
-            if (point.z > (arena.depth / 2) + arena.goal_depth - arena.goal_top_radius) {
+            if (point.z > (ARENA_DEPTH / 2) + GOAL_DEPTH - GOAL_TOP_RADIUS) {
                 dan = min(dan, dan_to_sphere_inner(
                         point,
                         new Vec3d(
 
                                 point.x,
-                                arena.goal_height - arena.goal_top_radius,
-                                (arena.depth / 2) + arena.goal_depth - arena.goal_top_radius),
-                        (float) arena.goal_top_radius));
+                                GOAL_HEIGHT - GOAL_TOP_RADIUS,
+                                (ARENA_DEPTH / 2) + GOAL_DEPTH - GOAL_TOP_RADIUS),
+                         GOAL_TOP_RADIUS));
             }
         }
 
 
         // Bottom corners
-        if (point.y < arena.bottom_radius) {
+        if (point.y < ARENA_BOTTOM_RADIUS) {
             // Side x
-            if (point.x > (arena.width / 2) - arena.bottom_radius) {
+            if (point.x > (ARENA_WIDTH / 2) - ARENA_BOTTOM_RADIUS) {
                 dan = min(dan, dan_to_sphere_inner(
                         point,
                         new Vec3d(
-                                (arena.width / 2) - arena.bottom_radius,
-                                arena.bottom_radius,
+                                (ARENA_WIDTH / 2) - ARENA_BOTTOM_RADIUS,
+                                ARENA_BOTTOM_RADIUS,
                                 point.z
                         ),
-                        (float) arena.bottom_radius));
+                         ARENA_BOTTOM_RADIUS));
             }
 
             // Side z
-            if (point.z > (arena.depth / 2) - arena.bottom_radius
-                    && point.x >= (arena.goal_width / 2) + arena.goal_side_radius) {
+            if (point.z > (ARENA_DEPTH / 2) - ARENA_BOTTOM_RADIUS
+                    && point.x >= (GOAL_WIDTH / 2) + GOAL_SIDE_RADIUS) {
                 dan = min(dan, dan_to_sphere_inner(
                         point,
                         new Vec3d(
                                 point.x,
-                                arena.bottom_radius,
-                                (arena.depth / 2) - arena.bottom_radius
+                                ARENA_BOTTOM_RADIUS,
+                                (ARENA_DEPTH / 2) - ARENA_BOTTOM_RADIUS
                         ),
-                        (float) arena.bottom_radius));
+                         ARENA_BOTTOM_RADIUS));
             }
 
             // Side z (goal)
-            if (point.z > (arena.depth / 2) + arena.goal_depth - arena.bottom_radius) {
+            if (point.z > (ARENA_DEPTH / 2) + GOAL_DEPTH - ARENA_BOTTOM_RADIUS) {
                 dan = min(dan, dan_to_sphere_inner(
                         point,
                         new Vec3d(
                                 point.x,
-                                arena.bottom_radius,
-                                (arena.depth / 2) + arena.goal_depth - arena.bottom_radius
+                                ARENA_BOTTOM_RADIUS,
+                                (ARENA_DEPTH / 2) + GOAL_DEPTH - ARENA_BOTTOM_RADIUS
                         ),
-                        (float) arena.bottom_radius));
+                         ARENA_BOTTOM_RADIUS));
             }
 
             // Goal outer corner
             Vec2d o = new Vec2d(
-                    (arena.goal_width / 2) + arena.goal_side_radius,
-                    (arena.depth / 2) + arena.goal_side_radius);
+                    (GOAL_WIDTH / 2) + GOAL_SIDE_RADIUS,
+                    (ARENA_DEPTH / 2) + GOAL_SIDE_RADIUS);
             Vec2d u = new Vec2d(point.x, point.z).sub(o);
             if (u.x < 0 && v.y < 0
-                    && u.length() < arena.goal_side_radius + arena.bottom_radius) {
-                o.add(u.normalize().mul(arena.goal_side_radius + arena.bottom_radius));
+                    && u.length() < GOAL_SIDE_RADIUS + ARENA_BOTTOM_RADIUS) {
+                o.add(u.normalize().mul(GOAL_SIDE_RADIUS + ARENA_BOTTOM_RADIUS));
                 dan = min(dan, dan_to_sphere_inner(
                         point,
-                        new Vec3d(o.x, arena.bottom_radius, o.y),
-                        (float) arena.bottom_radius));
+                        new Vec3d(o.x, ARENA_BOTTOM_RADIUS, o.y),
+                         ARENA_BOTTOM_RADIUS));
             }
 
             // Side x (goal)
-            if (point.z >= (arena.depth / 2) + arena.goal_side_radius
-                    && point.x > (arena.goal_width / 2) - arena.bottom_radius) {
+            if (point.z >= (ARENA_DEPTH / 2) + GOAL_SIDE_RADIUS
+                    && point.x > (GOAL_WIDTH / 2) - ARENA_BOTTOM_RADIUS) {
                 dan = min(dan, dan_to_sphere_inner(
                         point,
                         new Vec3d(
-                                (arena.goal_width / 2) - arena.bottom_radius,
-                                arena.bottom_radius,
+                                (GOAL_WIDTH / 2) - ARENA_BOTTOM_RADIUS,
+                                ARENA_BOTTOM_RADIUS,
                                 point.z
                         ),
-                        (float) arena.bottom_radius));
+                         ARENA_BOTTOM_RADIUS));
             }
 
             // Corner
-            if (point.x > (arena.width / 2) - arena.corner_radius
-                    && point.z > (arena.depth / 2) - arena.corner_radius) {
+            if (point.x > (ARENA_WIDTH / 2) - ARENA_CORNER_RADIUS
+                    && point.z > (ARENA_DEPTH / 2) - ARENA_CORNER_RADIUS) {
                 Vec2d corner_o = new Vec2d(
-                        (arena.width / 2) - arena.corner_radius,
-                        (arena.depth / 2) - arena.corner_radius);
+                        (ARENA_WIDTH / 2) - ARENA_CORNER_RADIUS,
+                        (ARENA_DEPTH / 2) - ARENA_CORNER_RADIUS);
                 Vec2d n = new Vec2d(point.x, point.z).sub(corner_o);
                 double dist = n.length();
-                if (dist > arena.corner_radius - arena.bottom_radius) {
+                if (dist > ARENA_CORNER_RADIUS - ARENA_BOTTOM_RADIUS) {
                     n.div(dist);
-                    corner_o.add(n.mul(arena.corner_radius - arena.bottom_radius));
+                    corner_o.add(n.mul(ARENA_CORNER_RADIUS - ARENA_BOTTOM_RADIUS));
                     dan = min(dan, dan_to_sphere_inner(
                             point,
-                            new Vec3d(corner_o.x, arena.bottom_radius, corner_o.y),
-                            (float) arena.bottom_radius));
+                            new Vec3d(corner_o.x, ARENA_BOTTOM_RADIUS, corner_o.y),
+                             ARENA_BOTTOM_RADIUS));
                 }
 
             }
@@ -614,45 +612,45 @@ public class Sim {
         }
 
         // Ceiling corners
-        if (point.y > arena.height - arena.top_radius) {
+        if (point.y > ARENA_HEIGHT - ARENA_TOP_RADIUS) {
             // Side x
-            if (point.x > (arena.width / 2) - arena.top_radius) {
+            if (point.x > (ARENA_WIDTH / 2) - ARENA_TOP_RADIUS) {
                 dan = min(dan, dan_to_sphere_inner(
                         point,
                         new Vec3d(
-                                (arena.width / 2) - arena.top_radius,
-                                arena.height - arena.top_radius,
+                                (ARENA_WIDTH / 2) - ARENA_TOP_RADIUS,
+                                ARENA_HEIGHT - ARENA_TOP_RADIUS,
                                 point.z
                         ),
-                        (float) arena.top_radius));
+                         ARENA_TOP_RADIUS));
             }
 
             // Side z
-            if (point.z > (arena.depth / 2) - arena.top_radius) {
+            if (point.z > (ARENA_DEPTH / 2) - ARENA_TOP_RADIUS) {
                 dan = min(dan, dan_to_sphere_inner(
                         point,
                         new Vec3d(
                                 point.x,
-                                arena.height - arena.top_radius,
-                                (arena.depth / 2) - arena.top_radius
+                                ARENA_HEIGHT - ARENA_TOP_RADIUS,
+                                (ARENA_DEPTH / 2) - ARENA_TOP_RADIUS
                         ),
-                        (float) arena.top_radius));
+                         ARENA_TOP_RADIUS));
             }
 
             // Corner
-            if (point.x > (arena.width / 2) - arena.corner_radius
-                    && point.z > (arena.depth / 2) - arena.corner_radius) {
+            if (point.x > (ARENA_WIDTH / 2) - ARENA_CORNER_RADIUS
+                    && point.z > (ARENA_DEPTH / 2) - ARENA_CORNER_RADIUS) {
                 Vec2d corner_o = new Vec2d(
-                        (arena.width / 2) - arena.corner_radius,
-                        (arena.depth / 2) - arena.corner_radius);
+                        (ARENA_WIDTH / 2) - ARENA_CORNER_RADIUS,
+                        (ARENA_DEPTH / 2) - ARENA_CORNER_RADIUS);
                 Vec2d dv = new Vec2d(point.x, point.z).sub(corner_o);
-                if (dv.length() > arena.corner_radius - arena.top_radius) {
+                if (dv.length() > ARENA_CORNER_RADIUS - ARENA_TOP_RADIUS) {
                     dv.normalize();
-                    corner_o.add(dv.mul((arena.corner_radius - arena.top_radius)));
+                    corner_o.add(dv.mul((ARENA_CORNER_RADIUS - ARENA_TOP_RADIUS)));
                     dan = min(dan, dan_to_sphere_inner(
                             point,
-                            new Vec3d(corner_o.x, arena.height - arena.top_radius, corner_o.y),
-                            (float) arena.top_radius));
+                            new Vec3d(corner_o.x, ARENA_HEIGHT - ARENA_TOP_RADIUS, corner_o.y),
+                             ARENA_TOP_RADIUS));
                 }
             }
         }
@@ -666,23 +664,13 @@ public class Sim {
         return x;
     }
 
-    class Dan {
-        double distance;
-        Vec3d normal;
-
-        public Dan(double distance, Vec3d normal) {
-            this.distance = distance;
-            this.normal = normal;
-        }
-    }
-
     ////////////////////////////// utility funcs
     private Dan min(Dan a, Dan b) {
         return a.distance < b.distance ? a : b;
     }
 
     private Vec3d clampSpeed(Entity e, double maxSpeed) {
-        double speed = len(e.velocity_x, e.velocity_y, e.velocity_z);
+        double speed = Ut.len(e.velocity_x, e.velocity_y, e.velocity_z);
 
         if (speed < maxSpeed) return new Vec3d(e.velocity_x, e.velocity_y, e.velocity_z);
 
@@ -696,7 +684,7 @@ public class Sim {
 
     // USES vars target_velocity_xyz as output variables!!!
     private Vec3d clampSpeed(double x, double y, double z, double maxSpeed) {
-        double speed = len(x, y, z);
+        double speed = Ut.len(x, y, z);
 
         if (speed < maxSpeed) return new Vec3d(x, y, z);
 
@@ -708,12 +696,6 @@ public class Sim {
         return new Vec3d(target_velocity_x, target_velocity_y, target_velocity_z);
     }
 
-    private double len(double x, double y, double z) {
-        return Math.sqrt(x * x + y * y + z * z);
-    }
-
-    private double getUniformRandom(double min, double max) {
-        return rng.nextDouble() * (max - min) + min;
-    }
+    
 
 }
