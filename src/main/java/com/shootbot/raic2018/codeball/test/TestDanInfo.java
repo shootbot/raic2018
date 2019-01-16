@@ -1,3 +1,8 @@
+package com.shootbot.raic2018.codeball.test;
+
+
+import com.shootbot.raic2018.codeball.*;
+
 public class TestDanInfo {
 	// Центр сферы, откуда производился поиск до арены
 	public Vec3d point;

@@ -1,3 +1,4 @@
+package com.shootbot.raic2018.codeball;
 
 public class MyNitroPack extends Entity {
     public int id;

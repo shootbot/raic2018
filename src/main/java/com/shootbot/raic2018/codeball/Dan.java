@@ -1,6 +1,8 @@
+package com.shootbot.raic2018.codeball;
+
 public class Dan {
-	double distance;
-	Vec3d normal;
+	public double distance;
+	public Vec3d normal;
 	
 	public Dan(double distance, Vec3d normal) {
 		this.distance = distance;

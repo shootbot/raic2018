@@ -1,5 +1,7 @@
+package com.shootbot.raic2018.codeball;
+
 import com.google.gson.Gson;
-import model.*;
+import com.shootbot.raic2018.codeball.model.*;
 
 import java.io.*;
 import java.net.InetSocketAddress;

@@ -1,5 +1,6 @@
+package com.shootbot.raic2018.codeball;
+
 public class MyBall extends Entity {
-    
     public MyBall(Vec3d ball, Vec3d speed) {
         this.x = ball.x;
         this.y = ball.y;

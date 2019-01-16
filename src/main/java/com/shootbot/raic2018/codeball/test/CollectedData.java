@@ -1,3 +1,6 @@
+package com.shootbot.raic2018.codeball.test;
+
+import com.shootbot.raic2018.codeball.*;
 
 public class CollectedData {
 	

@@ -1,7 +1,6 @@
-import model.*;
+import com.shootbot.raic2018.codeball.*;
+import com.shootbot.raic2018.codeball.model.*;
 import org.junit.jupiter.api.*;
-
-import java.util.*;
 
 public class CheckSim {
 	private static final int TICKS = 1000_000;
@@ -56,6 +55,6 @@ public class CheckSim {
 		} else {
 			mr.jump_speed = 0;
 		}
-	
+		
 	}
 }

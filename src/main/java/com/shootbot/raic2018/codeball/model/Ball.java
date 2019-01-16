@@ -1,4 +1,4 @@
-package model;
+package com.shootbot.raic2018.codeball.model;
 
 public final class Ball {
     public double x;

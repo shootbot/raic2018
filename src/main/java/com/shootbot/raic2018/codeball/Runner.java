@@ -1,4 +1,6 @@
-import model.*;
+package com.shootbot.raic2018.codeball;
+
+import com.shootbot.raic2018.codeball.model.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,7 +21,6 @@ public final class Runner {
 
     public void run() throws IOException {
         Strategy strategy = new MyStrategy();
-//        Strategy strategy = new JsonTest();
         Map<Integer, Action> actions = new HashMap<>();
         Game game;
         remoteProcessClient.writeToken(token);

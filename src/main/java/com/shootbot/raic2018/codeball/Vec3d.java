@@ -1,3 +1,5 @@
+package com.shootbot.raic2018.codeball;
+
 public class Vec3d {
 	public double x;
 	public double y;

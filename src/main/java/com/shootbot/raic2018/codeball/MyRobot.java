@@ -1,4 +1,6 @@
-import model.*;
+package com.shootbot.raic2018.codeball;
+
+import com.shootbot.raic2018.codeball.model.*;
 
 public class MyRobot extends Entity {
     public double nitro_amount;

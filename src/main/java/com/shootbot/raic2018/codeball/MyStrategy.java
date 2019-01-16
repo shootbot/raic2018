@@ -1,5 +1,7 @@
-import model.*;
-import model.Robot;
+package com.shootbot.raic2018.codeball;
+
+import com.shootbot.raic2018.codeball.model.*;
+import com.shootbot.raic2018.codeball.model.Robot;
 
 import java.awt.*;
 import java.util.*;
@@ -11,14 +13,12 @@ import static java.lang.Math.*;
  * cut microticks per tick
  * sim only full speed and 0 15 jumps
  * pp for bot positioning
- *
- *
+ * <p>
+ * <p>
  * third robot:
  * keeper-2
  * attacker-2
  * toughguy
- *
- *
  */
 
 public final class MyStrategy implements Strategy {
