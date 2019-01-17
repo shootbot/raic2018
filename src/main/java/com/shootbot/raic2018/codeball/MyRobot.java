@@ -25,5 +25,9 @@ public class MyRobot extends Entity {
         this.velocity_x = r.velocity_x;
         this.velocity_y = r.velocity_y;
         this.velocity_z = r.velocity_z;
+
+        this.arena_e = Sim.ROBOT_ARENA_E;
+        this.radius = Sim.ROBOT_RADIUS;
+        this.mass = Sim.ROBOT_MASS;
     }
 }
