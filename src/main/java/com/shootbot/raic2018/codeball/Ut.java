@@ -32,7 +32,7 @@ public class Ut {
 		double width, Color color) {
 		
 		color.getRGBComponents(c);
-		return String.format("{\"Line\": {\"x1\": %.1f, \"y1\": %.1f, \"z1\": %.1f," +
+		return String.format(Locale.ENGLISH, "{\"Line\": {\"x1\": %.1f, \"y1\": %.1f, \"z1\": %.1f," +
 				" \"x2\": %.1f, \"y2\": %.1f, \"z2\": %.1f," +
 				" \"width\": %.1f, \"r\": %.1f, \"g\": %.1f, \"b\": %.1f, \"a\": %.1f }}",
 			x1, y1, z1,

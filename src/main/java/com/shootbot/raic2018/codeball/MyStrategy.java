@@ -45,7 +45,7 @@ public final class MyStrategy implements Strategy {
 	@Override
 	public void act(Robot me, Rules rules, Game game, Action action) {
 		init(game, rules, me);
-//		sim(game);
+		sim(game);
 		
 		if (isAttacker) {
 			moveAttacker();
@@ -289,8 +289,8 @@ public final class MyStrategy implements Strategy {
 	private Vec3d getMove30To(Vec3d target) {
 		Vec3d move = target.copy();
 		move.sub(bot.pos);
+		//move.sub(bot.speed);
 		move.setLength(rules.ROBOT_MAX_GROUND_SPEED);
-		move.sub(bot.speed);
 		
 		return move;
 	}
