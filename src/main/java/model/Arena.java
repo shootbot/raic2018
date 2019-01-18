@@ -1,4 +1,4 @@
-package com.shootbot.raic2018.codeball.model;
+package model;
 
 public final class Arena {
     public double width;

@@ -1,6 +1,4 @@
-package com.shootbot.raic2018.codeball;
-
-import com.shootbot.raic2018.codeball.model.*;
+import model.*;
 
 import java.io.IOException;
 import java.util.HashMap;

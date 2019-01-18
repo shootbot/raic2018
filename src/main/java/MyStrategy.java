@@ -1,7 +1,5 @@
-package com.shootbot.raic2018.codeball;
-
-import com.shootbot.raic2018.codeball.model.*;
-import com.shootbot.raic2018.codeball.model.Robot;
+import model.*;
+import model.Robot;
 
 import java.util.*;
 

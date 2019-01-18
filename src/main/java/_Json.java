@@ -1,11 +1,8 @@
-package com.shootbot.raic2018.codeball.test;
-
-import com.shootbot.raic2018.codeball.*;
-import com.shootbot.raic2018.codeball.model.*;
-import com.shootbot.raic2018.codeball.model.Robot;
+import model.*;
+import model.Robot;
 
 
-public class JsonTest implements Strategy {
+public class _Json implements Strategy {
 	public void act(Robot me, Rules rules, Game game, Action action) {
 	
 	}

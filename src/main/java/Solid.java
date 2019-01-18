@@ -1,5 +1,3 @@
-package com.shootbot.raic2018.codeball;
-
 public class Solid {
     Vec3d pos;
     Vec3d speed;

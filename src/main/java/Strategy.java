@@ -1,6 +1,4 @@
-package com.shootbot.raic2018.codeball;
-
-import com.shootbot.raic2018.codeball.model.*;
+import model.*;
 
 public interface Strategy {
     void act(Robot me, Rules rules, Game game, Action action);

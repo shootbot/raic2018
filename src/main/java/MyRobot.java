@@ -1,6 +1,4 @@
-package com.shootbot.raic2018.codeball;
-
-import com.shootbot.raic2018.codeball.model.*;
+import model.*;
 
 public class MyRobot extends Entity {
 	public int id;

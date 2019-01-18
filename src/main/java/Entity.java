@@ -1,5 +1,3 @@
-package com.shootbot.raic2018.codeball;
-
 public class Entity {
 	public double arena_e;
 

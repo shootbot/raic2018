@@ -1,5 +1,3 @@
-package com.shootbot.raic2018.codeball;
-
 import java.awt.*;
 import java.util.*;
 

@@ -1,5 +1,3 @@
-package com.shootbot.raic2018.codeball;
-
 import static java.lang.Math.*;
 
 public class Vec2d {

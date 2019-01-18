@@ -1,6 +1,3 @@
-package com.shootbot.raic2018.codeball;
-
-
 public class Sim {
 	private MyRobot[] robots;
 	private MyNitroPack[] nitro_packs;

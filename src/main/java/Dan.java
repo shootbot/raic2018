@@ -1,5 +1,3 @@
-package com.shootbot.raic2018.codeball;
-
 public class Dan {
 	public double distance;
 	public Vec3d normal;

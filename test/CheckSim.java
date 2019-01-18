@@ -1,5 +1,4 @@
-import com.shootbot.raic2018.codeball.*;
-import com.shootbot.raic2018.codeball.model.*;
+import model.*;
 import org.junit.jupiter.api.*;
 
 public class CheckSim {

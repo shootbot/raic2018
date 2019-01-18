@@ -1,5 +1,3 @@
-import com.shootbot.raic2018.codeball.*;
-import com.shootbot.raic2018.codeball.test.*;
 import org.junit.jupiter.api.*;
 
 
@@ -10,9 +8,9 @@ public class TestCollectedData {
 		double EPS = 1e-12;
 		
 		Sim sim = new Sim();
-		CollectedData cd = new CollectedData();
+		_CollectedData cd = new _CollectedData();
 		int count = 0;
-		for (TestDanInfo t : cd.data) {
+		for (_DanInfo t : cd.data) {
 			Dan resDan = sim.dan_to_arena(t.point);
 			t.validDan.normal.normalize();
 			
