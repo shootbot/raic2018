@@ -1,5 +1,4 @@
 import model.*;
-import model.Robot;
 
 import java.util.*;
 
@@ -19,7 +18,6 @@ import static java.lang.Math.*;
  */
 
 public final class MyStrategy implements Strategy {
-	private Random rng = new Random();
 	private Vec3d ball = new Vec3d();
 	private Vec3d ballSpeed = new Vec3d();
 	
@@ -43,6 +41,8 @@ public final class MyStrategy implements Strategy {
 	private Robot me;
 	
 	private boolean shouldJump = false;
+	private long totalTime = 0;
+	private int turns = 0;
 	
 	@Override
 	public void act(Robot me, Rules rules, Game game, Action action) {
@@ -50,7 +50,15 @@ public final class MyStrategy implements Strategy {
 		
 		if (isAttacker) {
 			moveAttacker();
+			long start = System.nanoTime();
 			sim(game);
+			long turnTime = System.nanoTime() - start;
+			totalTime += turnTime;
+			turns++;
+			if (turnTime > 20_000_000L) {
+				System.out.println("overflow: " + turnTime / 1_000_000L);
+				System.out.println("avg time: " + totalTime / turns / 1_000_000L);
+			}
 			if (shouldJump) {
 				jumpSpeed = Sim.ROBOT_MAX_JUMP_SPEED;
 			}
@@ -67,7 +75,6 @@ public final class MyStrategy implements Strategy {
 	}
 	
 	private void sim(Game game) {
-		long timeTotal = 0;
 		int SIM_TICKS = 100;
 		sim.setBall(new MyBall(ball, ballSpeed));
 		sim.setNitro_packs(new MyNitroPack[0]);
@@ -76,9 +83,8 @@ public final class MyStrategy implements Strategy {
 		
 		TurnDraw td = new TurnDraw(ball, game.robots);
 		for (int i = 1; i < SIM_TICKS; i++) {
-//			long start = System.nanoTime();
 			sim.tick();
-//			timeTotal += System.nanoTime() - start;
+			
 			State nextS = sim.getState();
 			if (goalScored(nextS)) {
 				shouldJump = true;
@@ -110,7 +116,7 @@ public final class MyStrategy implements Strategy {
 			mrs[i] = mr;
 			i++;
 		}
-
+		
 		return mrs;
 	}
 	
@@ -127,7 +133,7 @@ public final class MyStrategy implements Strategy {
 			throwBall();
 		} else {
 			if (attacking) {
-				if (dz < 0 || (bot.speed.z < 10 && dz < 3)) {
+				if (dz <= 0) { // || (bot.speed.z < 10 && dz < 3)
 					attacking = false;
 					Vec3d move = ball.copy();
 					move.z -= 8 * Sim.BALL_RADIUS;
@@ -168,7 +174,7 @@ public final class MyStrategy implements Strategy {
 	private void runToBall() {
 		Vec3d crashPoint = getCrashPoint();
 		targetSpeed = getMove30To(crashPoint);
-		
+
 //		if (ball.y > 1.5 * Sim.BALL_RADIUS) {
 //			if (Ut.dist2d(ball, bot.pos) < 3) {
 //				jumpSpeed = Sim.ROBOT_MAX_JUMP_SPEED;

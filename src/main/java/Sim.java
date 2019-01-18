@@ -17,7 +17,7 @@ public class Sim {
 	public static final double ROBOT_RADIUS = 1;
 	public static final double ROBOT_MASS = 2;
 	public static final int TICKS_PER_SECOND = 60;
-	public static final int MICROTICKS_PER_TICK = 100;
+	public static final int MICROTICKS_PER_TICK = 10; // CHANGED FROM 100
 	public static final int RESET_TICKS = 2 * TICKS_PER_SECOND;
 	public static final double BALL_ARENA_E = 0.7;
 	public static final double BALL_RADIUS = 2;

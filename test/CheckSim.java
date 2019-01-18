@@ -2,12 +2,12 @@ import model.*;
 import org.junit.jupiter.api.*;
 
 public class CheckSim {
-	private static final int TICKS = 100_000;
+	private static final int TICKS = 20_000;
 	
 	@Test
 	void test() {
 		Sim sim = new Sim();
-		sim.setBall(new MyBall(new Vec3d(0, 1, 0), new Vec3d(0, 0, 0)));
+		sim.setBall(new MyBall(new Vec3d(0, 2 * Sim.BALL_RADIUS, 0), new Vec3d(0, 0, 0)));
 		MyRobot[] robots = genRobots();
 		sim.setRobots(robots);
 		sim.setNitro_packs(new MyNitroPack[0]);
@@ -23,8 +23,8 @@ public class CheckSim {
 		}
 		System.out.println("time: " + totalTime / 1000_000 + "ms");
 		System.out.println("time per tick: " + totalTime / TICKS + "ns");
-		System.out.println("ticks per 20ms: " + 20_000_000 / (totalTime / TICKS)); // 117 v1.0 for work
-		
+		System.out.println("ticks per 20ms: " + 20_000_000 / (totalTime / TICKS));
+		// 117 v1.0 at work
 	}
 	
 	private MyRobot[] genRobots() {
@@ -42,7 +42,7 @@ public class CheckSim {
 		Robot r = new Robot();
 		r.x = x;
 		r.z = z;
-		r.y = 0.5;
+		r.y = Sim.ROBOT_RADIUS;
 		return new MyRobot(r);
 	}
 	
