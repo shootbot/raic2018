@@ -52,6 +52,16 @@ public class Sim {
 	
 	private static final double MAX_ENTITY_SPEED_SQUARED = MAX_ENTITY_SPEED * MAX_ENTITY_SPEED;
 	private static final double ROBOT_MAX_GROUND_SPEED_SQUARED = ROBOT_MAX_GROUND_SPEED * ROBOT_MAX_GROUND_SPEED;
+	private static final double HIT_COEF = 1 + (MIN_HIT_E + MAX_HIT_E) / 2;
+	private static final Vec3d GROUND_PLANE = new Vec3d(0, 0, 0);
+	private static final Vec3d GROUND_NORMAL = new Vec3d(0, 1, 0);
+	private static final Vec3d CEILING_PLANE = new Vec3d(0, ARENA_HEIGHT, 0);
+	private static final Vec3d CEILING_NORMAL = new Vec3d(0, -1, 0);
+	private static final Vec3d SIDE_X_PLANE = new Vec3d(ARENA_WIDTH / 2, 0, 0);
+	private static final Vec3d SIDE_X_NORMAL = new Vec3d(-1, 0, 0);
+	private static final Vec3d GOAL_Z_PLANE = new Vec3d(0, 0, (ARENA_DEPTH / 2) + GOAL_DEPTH);
+	private static final Vec3d GOAL_Z_NORMAL = new Vec3d(0, 0, -1);
+	
 	
 	
 	
@@ -242,7 +252,7 @@ public class Sim {
 				- b.radius_change_speed - a.radius_change_speed;
 			
 			if (delta_velocity < 0) {
-				double k = (1 + (MIN_HIT_E + MAX_HIT_E) / 2) * delta_velocity;
+				double k = HIT_COEF * delta_velocity;
 				double impulse_x = k * normal_x;
 				double impulse_y = k * normal_y;
 				double impulse_z = k * normal_z;
@@ -431,7 +441,6 @@ public class Sim {
 		}
 		
 		// Goal back corners
-		assert ARENA_BOTTOM_RADIUS == GOAL_TOP_RADIUS;
 		if (point.z > (ARENA_DEPTH / 2) + GOAL_DEPTH - ARENA_BOTTOM_RADIUS) {
 			dan = min(dan, dan_to_sphere_inner(
 				point,
@@ -498,7 +507,6 @@ public class Sim {
 			}
 		}
 		
-		
 		// Goal inside top corners
 		if (point.z > (ARENA_DEPTH / 2) + GOAL_SIDE_RADIUS
 			&& point.y > GOAL_HEIGHT - GOAL_TOP_RADIUS) {
@@ -525,7 +533,6 @@ public class Sim {
 					GOAL_TOP_RADIUS));
 			}
 		}
-		
 		
 		// Bottom corners
 		if (point.y < ARENA_BOTTOM_RADIUS) {
@@ -609,9 +616,7 @@ public class Sim {
 						new Vec3d(corner_o.x, ARENA_BOTTOM_RADIUS, corner_o.y),
 						ARENA_BOTTOM_RADIUS));
 				}
-				
 			}
-			
 		}
 		
 		// Ceiling corners
