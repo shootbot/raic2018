@@ -76,6 +76,11 @@ public class Sim {
 		this.nitro_packs = nitro_packs;
 	}
 	
+	public void setScore(int greenScore, int redScore) {
+		this.greenScore = greenScore;
+		this.redScore = redScore;
+	}
+	
 	public void setBall(MyBall ball) {
 		this.ball = ball;
 	}

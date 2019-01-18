@@ -26,7 +26,6 @@ public final class MyStrategy implements Strategy {
 	private Vec3d ballSpeed = new Vec3d();
 	
 	private StringBuilder msg = new StringBuilder();
-	private Rules rules;
 	
 	private Solid bot = new Solid();
 	private boolean attacking = true;
@@ -43,21 +42,26 @@ public final class MyStrategy implements Strategy {
 	private int lastCalcedTick = -1;
 	private int greenScore;
 	private int redScore;
+	private Robot me;
 	
 	private boolean shouldJump = false;
 	
 	@Override
 	public void act(Robot me, Rules rules, Game game, Action action) {
-		init(game, rules, me);
+		init(game, me);
 		
 		if (isAttacker) {
 			moveAttacker();
+			sim(game);
+			if (shouldJump) {
+				jumpSpeed = Sim.ROBOT_MAX_JUMP_SPEED;
+			}
 		} else {
 			moveDefender();
 		}
 		
 		if (lastCalcedTick != game.current_tick) {
-			sim(game);
+			
 			lastCalcedTick = game.current_tick;
 		}
 		
@@ -70,6 +74,7 @@ public final class MyStrategy implements Strategy {
 		sim.setBall(new MyBall(ball, ballSpeed));
 		sim.setNitro_packs(new MyNitroPack[0]);
 		sim.setRobots(makeMyRobots(game));
+		sim.setScore(greenScore, redScore);
 		
 		TurnDraw td = new TurnDraw(ball, game.robots);
 		for (int i = 1; i < SIM_TICKS; i++) {
@@ -88,9 +93,8 @@ public final class MyStrategy implements Strategy {
 		msg = td.getDrawLine();
 	}
 	
-	private boolean goalScored(State nextState) {
-		//nextState.greenScore;
-		return false;
+	private boolean goalScored(State state) {
+		return state.greenScore > greenScore;
 	}
 	
 	private MyRobot[] makeMyRobots(Game game) {
@@ -98,9 +102,13 @@ public final class MyStrategy implements Strategy {
 		int i = 0;
 		for (Robot r : game.robots) {
 			MyRobot mr = new MyRobot(r);
-			mr.target_velocity_x = r.velocity_x;
-			mr.target_velocity_y = r.velocity_y;
-			mr.target_velocity_z = r.velocity_z;
+			mr.target_velocity_x = targetSpeed.x;
+			mr.target_velocity_y = targetSpeed.y;
+			mr.target_velocity_z = targetSpeed.z;
+			
+			if (me.id == r.id) {
+				mr.jump_speed = Sim.ROBOT_MAX_JUMP_SPEED;
+			}
 			mrs[i] = mr;
 			i++;
 		}
@@ -117,28 +125,34 @@ public final class MyStrategy implements Strategy {
 	
 	private void moveAttacker() {
 		double dz = ball.z - bot.pos.z; // - Sim.BALL_RADIUS - Sim.ROBOT_RADIUS
-		if (attacking) {
-			if (dz > 0) {
-				tryAimShot();
-			} else {
-				attacking = false;
-				Vec3d move = ball.copy();
-				move.z -= 5 * Sim.BALL_RADIUS;
-				targetSpeed = getMove30To(move);
-			}
-		} else {
-			if (dz > 4 * Sim.BALL_RADIUS) {
-				attacking = true;
-				tryAimShot();
-			} else {
-				Vec3d move = ball.copy();
-				move.z -= 8 * Sim.BALL_RADIUS;
-				targetSpeed = getMove30To(move);
-			}
-		}
-		
-		if (dz > 0 && Ut.dist(ball, OUR_GATES) < Sim.GOAL_WIDTH / 2) {
+		if (bot.pos.z < -Sim.ARENA_DEPTH / 6) {
 			throwBall();
+		} else {
+			if (attacking) {
+				if (dz < 0 || (bot.speed.z < 10 && dz < 3)) {
+					attacking = false;
+					Vec3d move = ball.copy();
+					move.z -= 8 * Sim.BALL_RADIUS;
+					targetSpeed = getMove30To(move);
+				} else {
+					runToBall();
+				}
+			} else {
+				if (dz > 4 * Sim.BALL_RADIUS) {
+					attacking = true;
+					runToBall();
+				} else {
+					Vec3d move = ball.copy();
+					move.z -= 8 * Sim.BALL_RADIUS;
+					targetSpeed = getMove30To(move);
+				}
+			}
+			if (bot.pos.x < -Sim.ARENA_WIDTH / 2 + Sim.ARENA_BOTTOM_RADIUS) {
+				targetSpeed.x = 10;
+			}
+			if (bot.pos.x > Sim.ARENA_WIDTH / 2 - Sim.ARENA_BOTTOM_RADIUS) {
+				targetSpeed.x = -10;
+			}
 		}
 		
 		dontScoreYourself();
@@ -153,15 +167,15 @@ public final class MyStrategy implements Strategy {
 //        }
 	}
 	
-	private void tryAimShot() {
+	private void runToBall() {
 		Vec3d crashPoint = getCrashPoint();
 		targetSpeed = getMove30To(crashPoint);
 		
-		if (ball.y > 1.5 * Sim.BALL_RADIUS) {
-			if (Ut.dist2d(ball, bot.pos) < 3) {
-				jumpSpeed = Sim.ROBOT_MAX_JUMP_SPEED;
-			}
-		}
+//		if (ball.y > 1.5 * Sim.BALL_RADIUS) {
+//			if (Ut.dist2d(ball, bot.pos) < 3) {
+//				jumpSpeed = Sim.ROBOT_MAX_JUMP_SPEED;
+//			}
+//		}
 	}
 	
 	private void throwBall() {
@@ -205,7 +219,7 @@ public final class MyStrategy implements Strategy {
 		
 		targetSpeed = getMove30To(new Vec3d(x, 0, -Sim.ARENA_DEPTH / 2));
 		if (Ut.dist(bot.pos, OUR_GATES) < Sim.GOAL_WIDTH / 2) {
-			targetSpeed.mul(0.5);
+			targetSpeed.mul(0.6);
 		}
 		
 		if (targetSpeed.x > 0) {
@@ -303,8 +317,10 @@ public final class MyStrategy implements Strategy {
 		return move;
 	}
 	
-	private void init(Game game, Rules rules, Robot me) {
-		this.rules = rules;
+	private void init(Game game, Robot me) {
+		this.me = me;
+		shouldJump = false;
+		
 		if (lastCalcedTick != game.current_tick) {
 			msg.setLength(0);
 		}
