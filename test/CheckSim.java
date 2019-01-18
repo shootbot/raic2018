@@ -2,7 +2,7 @@ import model.*;
 import org.junit.jupiter.api.*;
 
 public class CheckSim {
-	private static final int TICKS = 20_000;
+	private static final int TICKS = 200_000;
 	
 	@Test
 	void test() {

@@ -55,6 +55,10 @@ public class Ut {
 		return Math.sqrt(x * x + y * y + z * z);
 	}
 	
+	public static double lenSq(double x, double y, double z) {
+		return x * x + y * y + z * z;
+	}
+	
 	public static double getUniformRandom(double min, double max) {
 		return rng.nextDouble() * (max - min) + min;
 	}

@@ -4,7 +4,6 @@ public class Sim {
 	private MyBall ball;
 	private int greenScore;
 	private int redScore;
-	
 	private boolean collision;
 	
 	public static final double ROBOT_MIN_RADIUS = 1;
@@ -50,6 +49,11 @@ public class Sim {
 	public static final double GOAL_DEPTH = 10;
 	public static final double GOAL_HEIGHT = 10;
 	public static final double GOAL_SIDE_RADIUS = 1;
+	
+	private static final double MAX_ENTITY_SPEED_SQUARED = MAX_ENTITY_SPEED * MAX_ENTITY_SPEED;
+	private static final double ROBOT_MAX_GROUND_SPEED_SQUARED = ROBOT_MAX_GROUND_SPEED * ROBOT_MAX_GROUND_SPEED;
+	
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////
 	// output variables
@@ -137,7 +141,7 @@ public class Sim {
 				clampSpeed(robot.target_velocity_x,
 					robot.target_velocity_y,
 					robot.target_velocity_z,
-					ROBOT_MAX_GROUND_SPEED);
+					ROBOT_MAX_GROUND_SPEED_SQUARED);
 				
 				double dot = robot.touch_normal_x * target_velocity_x
 					+ robot.touch_normal_y * target_velocity_y
@@ -151,12 +155,13 @@ public class Sim {
 				double target_velocity_change_y = target_velocity_y - robot.velocity_y;
 				double target_velocity_change_z = target_velocity_z - robot.velocity_z;
 				
-				double len = Ut.len(target_velocity_change_x, target_velocity_change_y, target_velocity_change_z);
-				if (len > 0) {
+				double lenSq = Ut.lenSq(target_velocity_change_x, target_velocity_change_y, target_velocity_change_z);
+				if (lenSq > 0) {
 					double acceleration = ROBOT_ACCELERATION * Math.max(0, robot.touch_normal_y);
+					// optimize
 					Vec3d v = Vec3d.normalize(target_velocity_change_x, target_velocity_change_y, target_velocity_change_z);
 					double k = acceleration * delta_time;
-					clampSpeed(v.x * k, v.y * k, v.z * k, len);
+					clampSpeed(v.x * k, v.y * k, v.z * k, lenSq);
 					
 					robot.velocity_x += target_velocity_x;
 					robot.velocity_y += target_velocity_y;
@@ -164,7 +169,7 @@ public class Sim {
 				}
 			}
 			
-			// todo check this code
+			// todo check this code // optimize
 			if (robot.use_nitro) {
 				double target_velocity_change_x = Math.min(
 					robot.target_velocity_x - robot.velocity_x,
@@ -278,7 +283,7 @@ public class Sim {
 	}
 	
 	private void move(Entity e, double delta_time) {
-		clampSpeed(e, MAX_ENTITY_SPEED);
+		moveClampSpeed(e);
 		
 		e.x += e.velocity_x * delta_time;
 		e.y += e.velocity_y * delta_time;
@@ -666,31 +671,27 @@ public class Sim {
 		return a.distance < b.distance ? a : b;
 	}
 	
-	private Vec3d clampSpeed(Entity e, double maxSpeed) {
-		double speed = Ut.len(e.velocity_x, e.velocity_y, e.velocity_z);
+	private void moveClampSpeed(Entity e) {
+		double speedSq = Ut.lenSq(e.velocity_x, e.velocity_y, e.velocity_z);
 		
-		if (speed < maxSpeed) return new Vec3d(e.velocity_x, e.velocity_y, e.velocity_z);
+		if (speedSq < MAX_ENTITY_SPEED_SQUARED) return;
 		
-		double k = maxSpeed / speed;
+		double k = Math.sqrt(MAX_ENTITY_SPEED_SQUARED / speedSq);
 		e.velocity_x *= k;
 		e.velocity_y *= k;
 		e.velocity_z *= k;
-		
-		return new Vec3d(e.velocity_x, e.velocity_y, e.velocity_z);
 	}
 	
-	// USES vars target_velocity_xyz as output variables!!!
-	private Vec3d clampSpeed(double x, double y, double z, double maxSpeed) {
-		double speed = Ut.len(x, y, z);
+	// USES target_velocity_xyz as out parameters!
+	private void clampSpeed(double x, double y, double z, double maxSpeedSq) {
+		double speedSq = Ut.lenSq(x, y, z);
 		
-		if (speed < maxSpeed) return new Vec3d(x, y, z);
+		if (speedSq < maxSpeedSq) return;
 		
-		double k = maxSpeed / speed;
+		double k = Math.sqrt(maxSpeedSq / speedSq);
 		target_velocity_x = x * k;
 		target_velocity_y = y * k;
 		target_velocity_z = z * k;
-		
-		return new Vec3d(target_velocity_x, target_velocity_y, target_velocity_z);
 	}
 	
 }
