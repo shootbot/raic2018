@@ -235,7 +235,7 @@ public class Sim {
 				- b.radius_change_speed - a.radius_change_speed;
 			
 			if (delta_velocity < 0) {
-				double k = (1 + Ut.getUniformRandom(MIN_HIT_E, MAX_HIT_E)) * delta_velocity;
+				double k = (1 + (MIN_HIT_E + MAX_HIT_E) / 2) * delta_velocity;
 				double impulse_x = k * normal_x;
 				double impulse_y = k * normal_y;
 				double impulse_z = k * normal_z;

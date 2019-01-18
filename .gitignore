@@ -67,6 +67,6 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
-№ Raic specific
+# Raic specific
 testing/out.txt
 testing/java-cgdk-jar-with-dependencies.jar

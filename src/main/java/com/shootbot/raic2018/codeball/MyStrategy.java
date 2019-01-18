@@ -3,7 +3,6 @@ package com.shootbot.raic2018.codeball;
 import com.shootbot.raic2018.codeball.model.*;
 import com.shootbot.raic2018.codeball.model.Robot;
 
-import java.awt.*;
 import java.util.*;
 
 import static java.lang.Math.*;
@@ -41,11 +40,15 @@ public final class MyStrategy implements Strategy {
 	
 	private State[] states = new State[18000];
 	private Sim sim = new Sim();
+	private int lastCalcedTick = -1;
+	private int greenScore;
+	private int redScore;
+	
+	private boolean shouldJump = false;
 	
 	@Override
 	public void act(Robot me, Rules rules, Game game, Action action) {
 		init(game, rules, me);
-		sim(game);
 		
 		if (isAttacker) {
 			moveAttacker();
@@ -53,39 +56,56 @@ public final class MyStrategy implements Strategy {
 			moveDefender();
 		}
 		
+		if (lastCalcedTick != game.current_tick) {
+			sim(game);
+			lastCalcedTick = game.current_tick;
+		}
+		
 		writeAction(action);
 	}
 	
 	private void sim(Game game) {
 		long timeTotal = 0;
-		long TIME_LIMIT = 20L;
-		int SIM_TICKS = 120;
+		int SIM_TICKS = 100;
 		sim.setBall(new MyBall(ball, ballSpeed));
 		sim.setNitro_packs(new MyNitroPack[0]);
-		sim.setRobots(new MyRobot[0]);
-		int currentTick = game.current_tick;
-		Vec3d curBall = ball.copy();
-		boolean isFirstTime = true;
-		for (int i = 1; i < SIM_TICKS; i++) {
-			long start = System.nanoTime();
-			sim.tick();
-			timeTotal += System.nanoTime() - start;
-			State next = sim.getState();
-			states[currentTick + i] = next;
-			String line = Ut.getLine(curBall.x, curBall.y, curBall.z,
-				next.ball.x, next.ball.y, next.ball.z,
-				3, Color.RED);
-			curBall = new Vec3d(next.ball.x, next.ball.y, next.ball.z);
-			
-			if (!isFirstTime) {
-				msg.append(',');
-			}
-			isFirstTime = false;
-			
-			msg.append(line);
-			
-		}
+		sim.setRobots(makeMyRobots(game));
 		
+		TurnDraw td = new TurnDraw(ball, game.robots);
+		for (int i = 1; i < SIM_TICKS; i++) {
+//			long start = System.nanoTime();
+			sim.tick();
+//			timeTotal += System.nanoTime() - start;
+			State nextS = sim.getState();
+			if (goalScored(nextS)) {
+				shouldJump = true;
+				break;
+			}
+			//states[currentTick + i] = nextS;
+			
+			td.setNextState(nextS);
+		}
+		msg = td.getDrawLine();
+	}
+	
+	private boolean goalScored(State nextState) {
+		//nextState.greenScore;
+		return false;
+	}
+	
+	private MyRobot[] makeMyRobots(Game game) {
+		MyRobot[] mrs = new MyRobot[game.robots.length];
+		int i = 0;
+		for (Robot r : game.robots) {
+			MyRobot mr = new MyRobot(r);
+			mr.target_velocity_x = r.velocity_x;
+			mr.target_velocity_y = r.velocity_y;
+			mr.target_velocity_z = r.velocity_z;
+			mrs[i] = mr;
+			i++;
+		}
+
+		return mrs;
 	}
 	
 	private void writeAction(Action action) {
@@ -102,7 +122,6 @@ public final class MyStrategy implements Strategy {
 				tryAimShot();
 			} else {
 				attacking = false;
-//				System.out.println("stop attack, att:" + bot + " ball:" + ball);
 				Vec3d move = ball.copy();
 				move.z -= 5 * Sim.BALL_RADIUS;
 				targetSpeed = getMove30To(move);
@@ -110,7 +129,6 @@ public final class MyStrategy implements Strategy {
 		} else {
 			if (dz > 4 * Sim.BALL_RADIUS) {
 				attacking = true;
-//				System.out.println("start attack, att:" + bot + " ball:" + ball);
 				tryAimShot();
 			} else {
 				Vec3d move = ball.copy();
@@ -273,31 +291,23 @@ public final class MyStrategy implements Strategy {
 				}
 			}
 		}
-		if (Double.isNaN(targetSpeed.x)) {
-			System.out.println("defender NaN");
-			System.out.println("ball: " + ball + "->" + ballSpeed);
-			System.out.println("bot: " + bot.pos + "->" + bot.speed);
-			System.out.println("dz " + dz);
-			System.out.println("dx " + dx);
-			System.out.println("s " + s);
-			System.out.println("v " + v);
-			System.out.println("t " + t);
-			System.out.println("a " + a);
-		}
 	}
 	
 	private Vec3d getMove30To(Vec3d target) {
 		Vec3d move = target.copy();
 		move.sub(bot.pos);
-		//move.sub(bot.speed);
-		move.setLength(rules.ROBOT_MAX_GROUND_SPEED);
+//		move.sub(bot.speed);
+		move.y = 0;
+		move.setLength(Sim.ROBOT_MAX_GROUND_SPEED);
 		
 		return move;
 	}
 	
 	private void init(Game game, Rules rules, Robot me) {
 		this.rules = rules;
-		msg.setLength(0);
+		if (lastCalcedTick != game.current_tick) {
+			msg.setLength(0);
+		}
 		targetSpeed = new Vec3d();
 		jumpSpeed = 0;
 		isAttacker = false;
@@ -314,18 +324,18 @@ public final class MyStrategy implements Strategy {
 			if (me.id != r.id) {
 				bot.pos = new Vec3d(me.x, me.y, me.z);
 				bot.speed = new Vec3d(me.velocity_x, me.velocity_y, me.velocity_z);
-//				Vec3d newPos = bot.pos.copy().add(bot.speed.copy().mul(10 * Sim.DELTA_TIME));
-//
-//				Vec3d otherBotPos = new Vec3d(r.x, r.y, r.z);
-//				Vec3d otherBotSpeed = new Vec3d(r.velocity_x, r.velocity_y, r.velocity_z);
-//				otherBotPos.add(otherBotSpeed.mul(10 * Sim.DELTA_TIME));
-//
-//				double myDist = Ut.dist(ballPos, newPos);
-//				double otherDist = Ut.dist(ballPos, otherBotPos);
 				
 				if (me.z > r.z) {
 					isAttacker = true;
 				}
+			}
+		}
+		
+		for (Player p : game.players) {
+			if (p.me) {
+				greenScore = p.score;
+			} else {
+				redScore = p.score;
 			}
 		}
 	}

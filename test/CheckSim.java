@@ -3,7 +3,7 @@ import com.shootbot.raic2018.codeball.model.*;
 import org.junit.jupiter.api.*;
 
 public class CheckSim {
-	private static final int TICKS = 1000_000;
+	private static final int TICKS = 100_000;
 	
 	@Test
 	void test() {
@@ -24,7 +24,7 @@ public class CheckSim {
 		}
 		System.out.println("time: " + totalTime / 1000_000 + "ms");
 		System.out.println("time per tick: " + totalTime / TICKS + "ns");
-		System.out.println("ticks per 20ms: " + 20_000_000 / (totalTime / TICKS));
+		System.out.println("ticks per 20ms: " + 20_000_000 / (totalTime / TICKS)); // 117 v1.0 for work
 		
 	}
 	

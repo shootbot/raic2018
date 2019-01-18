@@ -32,7 +32,8 @@ public class Ut {
 		double width, Color color) {
 		
 		color.getRGBComponents(c);
-		return String.format(Locale.ENGLISH, "{\"Line\": {\"x1\": %.2f, \"y1\": %.2f, \"z1\": %.2f," +
+		return String.format(Locale.ENGLISH,
+			"{\"Line\": {\"x1\": %.2f, \"y1\": %.2f, \"z1\": %.2f," +
 				" \"x2\": %.2f, \"y2\": %.2f, \"z2\": %.2f," +
 				" \"width\": %.2f, \"r\": %.2f, \"g\": %.2f, \"b\": %.2f, \"a\": %.2f }}",
 			x1, y1, z1,
@@ -43,7 +44,8 @@ public class Ut {
 	public static String getSphere(double x, double y, double z, double radius, Color color) {
 		
 		color.getRGBComponents(c);
-		return String.format("{\"Sphere\": {\"x\": %.2f, \"y\": %.2f, \"z\": %.2f," +
+		return String.format(Locale.ENGLISH,
+			"{\"Sphere\": {\"x\": %.2f, \"y\": %.2f, \"z\": %.2f," +
 				" \"radius\": %.2f," +
 				" \"r\": %.2f, \"g\": %.2f, \"b\": %.2f, \"a\": %.2f }}",
 			x, y, z,
