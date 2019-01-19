@@ -10,18 +10,18 @@ public class TestCollectedData {
 		Sim sim = new Sim();
 		_CollectedData cd = new _CollectedData();
 		int count = 0;
-		for (_DanInfo t : cd.data) {
-			Dan resDan = sim.dan_to_arena(t.point);
-			t.validDan.normal.normalize();
+		for (_DanInfo di : cd.data) {
+			sim.dan_to_arena_to_A(di.point.copy());
+			Dan resDan = sim.getResultDan();
+			di.validDan.normal.normalize();
 			
-			assert equalsWithEps(resDan, t.validDan, EPS);
-			
-//			if (!equalsWithEps(resDan, t.validDan, EPS)) {
-//				System.out.println("data" + t + " res" + resDan);
-//				count++;
-//			}
+			if (!equalsWithEps(resDan, di.validDan, EPS)) {
+				System.out.println("data" + di.point + "expected" + di.validDan + " actual" + resDan);
+				count++;
+			}
 		}
 		System.out.println("total: "  + cd.data.length + " wrong: " + count);
+		assert count == 0;
 	}
 	
 	private boolean equalsWithEps(Dan dan1, Dan dan2, double eps) {

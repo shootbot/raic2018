@@ -92,12 +92,14 @@ public class Vec3d {
 
 	public double length() {
 		return hypot(x, y, z);
-//        return FastMath.hypot(x, y);
 	}
 
 	public double distance(Vec3d v) {
 		return hypot(x - v.x, y - v.y, z - v.z);
-//        return FastMath.hypot(x - v.x, y - v.y);
+	}
+
+	public double lenSq() {
+		return x * x + y * y + z * z;
 	}
 
 	public double squareDistance(Vec3d v) {
@@ -142,8 +144,7 @@ public class Vec3d {
 		if (length == 0.0D) {
 			throw new IllegalStateException("Can\'t set angle of zero-width vector.");
 		} else {
-			Vec3d v = new Vec3d(x / length, y / length, z / length);
-			return v;
+			return new Vec3d(x / length, y / length, z / length);
 		}
 	}
 

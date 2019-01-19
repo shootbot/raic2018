@@ -54,7 +54,11 @@ public class Ut {
 	public static double len(double x, double y, double z) {
 		return Math.sqrt(x * x + y * y + z * z);
 	}
-	
+
+	public static double len2d(double x, double y) {
+		return Math.sqrt(x * x + y * y);
+	}
+
 	public static double lenSq(double x, double y, double z) {
 		return x * x + y * y + z * z;
 	}
@@ -65,5 +69,11 @@ public class Ut {
 	
 	public static boolean nextBoolean() {
 		return rng.nextBoolean();
+	}
+
+	public static void copyVec3d(Vec3d from, Vec3d to) {
+		to.x = from.x;
+		to.y = from.y;
+		to.z = from.z;
 	}
 }
