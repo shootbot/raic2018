@@ -1,0 +1,6 @@
+func collide_with_arena
+no return after collision = true
+
+func collide_entities
+var delta_velocity
+"- b.radius_change_speed - a.radius_change_speed;" instead of "+ b.radius_change_speed - a.radius_change_speed;"

@@ -38,6 +38,7 @@ public class Sim {
     public static final double ARENA_BOTTOM_RADIUS = 3;
     public static final double ARENA_TOP_RADIUS = 7;
     public static final double ARENA_CORNER_RADIUS = 13;
+
     public static final double GOAL_TOP_RADIUS = 3;
     public static final double GOAL_WIDTH = 30;
     public static final double GOAL_DEPTH = 10;
