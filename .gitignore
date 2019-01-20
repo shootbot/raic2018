@@ -70,3 +70,4 @@ fabric.properties
 # Raic specific
 testing/out.txt
 testing/java-cgdk-jar-with-dependencies.jar
+testing/codeball2018-windows/log.txt
